@@ -8,9 +8,9 @@ export const getChats = async (
   next: NextFunction
 ) => {
   try {
-    const chatList = await chatService.getChats();
+    const chats = await chatService.getChats();
 
-    return res.status(200).json({ chats: chatList });
+    return res.status(200).json({ chats });
   } catch (error: any) {
     // error.reason = "failed to send chat.";
     next(error);

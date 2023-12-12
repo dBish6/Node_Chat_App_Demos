@@ -2,6 +2,11 @@
  *  @Author David Bishop
  */
 
+interface Message {
+  user: string;
+  msg: string;
+}
+
 import express from "express";
 import dotenv from "dotenv";
 
@@ -20,6 +25,8 @@ import { createServer } from "http";
 import { connect } from "mongoose";
 import { Server } from "socket.io";
 
+import Chat from "./models/Chat";
+
 const app = express();
 dotenv.config();
 
@@ -31,12 +38,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 // app.use(cookieParser());
 
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    credentials: true,
-  })
-);
+const corsOptions = { origin: "http://localhost:3000", credentials: true };
+app.use(cors(corsOptions));
 
 // *Security*
 app.use(helmet()); // Protects various HTTP headers that can help defend against common web hacks.
@@ -60,24 +63,38 @@ app.use(
   morgan(":method :url :status :response-time ms \n headers: :all-headers")
 );
 
-// *Custom*
-// app.use(someCustomMiddleware);
-
 const httpServer = createServer(app);
-export const io = new Server(httpServer);
+export const io = new Server(httpServer, {
+  cors: corsOptions,
+});
 
-// io.on("connection", (socket) => {
-//   console.log(`User connected; ${socket.id}.`);
+io.on("connection", (socket) => {
+  console.log(`User connected; ${socket.id}.`);
+  // TODO:
+  socket.on("typing", async (user: string) => {
+    socket.broadcast.emit("typing", user);
+  });
 
-//   // socket.emit("message", "Hello from the server");
+  socket.on("msg", async ({ user, msg }: Message) => {
+    console.log("Received message: ", { user, msg });
 
-//   socket.on("disconnect", () => {
-//     console.log(`User disconnected; ${socket.id}.`);
-//   });
-// });
+    const chat = new Chat({
+      username: user,
+      message: msg,
+    });
+    await chat.save();
+    const sentChat = await Chat.findOne().sort({ timestamp: -1 });
+    // Sends to all connected clients, including the sender.
+    socket.emit("get_msg", sentChat);
+  });
+
+  socket.on("disconnect", () => {
+    console.log(`User disconnected; ${socket.id}.`);
+  });
+});
 
 // *Namespaces*
-export const chatNamespace = io.of(`${baseUrl}/chat`);
+// export const chatNamespace = io.of(`${baseUrl}/chat`);
 
 // *Routers*
 app.use(`${baseUrl}/chat`, chatRouter);
