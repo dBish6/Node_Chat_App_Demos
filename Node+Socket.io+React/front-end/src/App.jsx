@@ -1,30 +1,46 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { subscribeToMessages } from "./services/api";
-import { sendAsyncMessage } from "./services/sendMessage";
-import { chatMessages } from "./redux/chatSelectors";
+
+import socketConfig from "./services/socketConfig";
+import getMessages from "./services/getMessages";
+import emitMessage from "./services/emitMessage";
+
+import { selectMessages } from "./redux/chatSelectors";
+
+import { socket } from "./services/socketConfig";
+import { ADD_MESSAGE } from "./redux/chatSlice";
 
 function App() {
   const [message, setMessage] = useState("");
   const dispatch = useDispatch();
-  const messages = useSelector(chatMessages);
+  const messages = useSelector(selectMessages);
 
+  // Sends the new message sent by the sender.
   const handleSendMessage = () => {
     if (message.trim() !== "") {
-      dispatch(sendAsyncMessage(message));
+      dispatch(emitMessage(message));
       setMessage("");
     }
   };
 
   useEffect(() => {
-    subscribeToMessages(dispatch);
+    // Establishes the connection to the chat socket.
+    socketConfig();
+    // Gets saved messages, if any.
+    dispatch(getMessages());
+    // Gets back the new message sent by the sender.
+    socket.on("get_msg", (chat) => {
+      dispatch(ADD_MESSAGE(chat));
+    });
+
+    return () => socket.disconnect();
   }, []);
 
   return (
     <div>
       <div>
-        {messages.map((msg, index) => (
-          <div key={index}>
+        {messages.map((msg, i) => (
+          <div key={i}>
             <strong>{msg.username}:</strong> {msg.message}
           </div>
         ))}
@@ -33,6 +49,7 @@ function App() {
         <input
           type="text"
           value={message}
+          placeholder="Message"
           onChange={(e) => setMessage(e.target.value)}
         />
         <button onClick={handleSendMessage}>Send</button>

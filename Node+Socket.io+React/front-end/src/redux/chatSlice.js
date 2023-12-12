@@ -1,4 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
+import getMessages from "../services/getMessages";
+import emitMessage from "../services/emitMessage";
 
 export const chatSlice = createSlice({
   name: "chat",
@@ -6,12 +8,38 @@ export const chatSlice = createSlice({
     messages: [],
   },
   reducers: {
-    addMessage: (state, action) => {
-      state.messages = [...state.messages, action.payload];
+    SET_MESSAGES: (state, action) => {
+      state.messages = [...action.payload];
     },
+    ADD_MESSAGE: (state, action) => {
+      state.messages = [action.payload, ...state.messages];
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(getMessages.pending, (state) => {
+      console.log("Getting messages...");
+    });
+    builder.addCase(getMessages.fulfilled, (state) => {
+      console.log("Messages received!");
+    });
+    builder.addCase(getMessages.rejected, (state, action) => {
+      state.persisterLoading.patch = false;
+      console.error("getMessages error:\n", action.error.message);
+    });
+
+    builder.addCase(emitMessage.pending, (state) => {
+      console.log("Emitted message pending...");
+    });
+    builder.addCase(emitMessage.fulfilled, (state) => {
+      console.log("Emitted message fulfilled!");
+    });
+    builder.addCase(emitMessage.rejected, (state, action) => {
+      state.persisterLoading.patch = false;
+      console.error("emitMessage error:\n", action.error.message);
+    });
   },
 });
 
-export const { addMessage } = chatSlice.actions;
+export const { SET_MESSAGES, ADD_MESSAGE } = chatSlice.actions;
 
 export default chatSlice.reducer;
