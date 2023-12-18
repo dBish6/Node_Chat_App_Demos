@@ -1,9 +1,17 @@
-import { Schema, model } from "mongoose";
+import { Schema } from "mongoose";
 
-const ChatSchema = new Schema({
+export const ChatAlphaSchema = new Schema({
   username: { type: String, required: true },
   message: { type: String, required: true },
   timestamp: { type: Date, default: Date.now },
 });
 
-export default model("chats", ChatSchema);
+// export const ChatAlpha = model("chat_alpha", ChatAlphaSchema);
+
+export const ChatBravoSchema = new Schema({
+  username: { type: String, required: true },
+  message: { type: String, required: true },
+  timestamp: { type: Date, default: Date.now },
+});
+
+// export const ChatBravo = model("chat_bravo", ChatBravoSchema);

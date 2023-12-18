@@ -2,10 +2,7 @@
  *  @Author David Bishop
  */
 
-interface Message {
-  user: string;
-  msg: string;
-}
+import { Join, Message } from "./dtos/Room";
 
 import express from "express";
 import dotenv from "dotenv";
@@ -25,7 +22,7 @@ import { createServer } from "http";
 import { connect } from "mongoose";
 import { Server } from "socket.io";
 
-import Chat from "./models/Chat";
+import { storeMessage } from "./services/chatService";
 
 const app = express();
 dotenv.config();
@@ -68,6 +65,7 @@ export const io = new Server(httpServer, {
   cors: corsOptions,
 });
 
+// TODO: Move
 io.on("connection", (socket) => {
   console.log(`User connected; ${socket.id}.`);
   // TODO:
@@ -75,17 +73,27 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("typing", user);
   });
 
-  socket.on("msg", async ({ user, msg }: Message) => {
-    console.log("Received message: ", { user, msg });
+  socket.on("join_room", (data: Join) => {
+    socket.join(data.roomId);
 
-    const chat = new Chat({
-      username: user,
-      message: msg,
-    });
-    await chat.save();
-    const sentChat = await Chat.findOne().sort({ timestamp: -1 });
-    // Sends to all connected clients, including the sender.
-    socket.emit("get_msg", sentChat);
+    console.log(`${data.user} joined room ${data.roomId}.`);
+    socket
+      .to(data.roomId)
+      .emit("get_msg", { message: `${data.user} has joined the chat.` });
+  });
+
+  socket.on("leave_room", (data: Join) => {
+    socket.leave(data.roomId);
+
+    console.log(`${data.user} left room ${data.roomId}.`);
+  });
+
+  socket.on("msg", async (data: Message) => {
+    console.log("Received message: ", data);
+
+    const sentMessage = await storeMessage({ ...data });
+
+    io.to(data.roomId).emit("get_msg", sentMessage);
   });
 
   socket.on("disconnect", () => {

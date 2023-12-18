@@ -1,9 +1,33 @@
-import Chat from "../models/Chat";
+import { RoomIds } from "../typings/RoomIds";
+import { Message } from "../dtos/Room";
+import { model } from "mongoose";
+import { ChatAlphaSchema, ChatBravoSchema } from "../models/Chat";
 
-export const getChats = async () => {
+export const getChats = async (roomId: RoomIds) => {
   try {
-    return await Chat.find().sort({ timestamp: -1 }).limit(32);
+    const roomModel = model(
+      `chat_${roomId.toLowerCase()}`,
+      roomId === "Alpha" ? ChatAlphaSchema : ChatBravoSchema
+    );
+
+    return await roomModel.find().sort({ timestamp: -1 }).limit(32);
   } catch (error: any) {
     throw new Error("getChats error;\n" + error.message);
   }
+};
+
+export const storeMessage = async ({ user, msg, roomId }: Message) => {
+  const roomModel = model(
+    `chat_${roomId.toLowerCase()}`,
+    roomId === "Alpha" ? ChatAlphaSchema : ChatBravoSchema
+  );
+
+  const chat = new roomModel({
+    username: user,
+    message: msg,
+    room_id: roomId,
+  });
+  await chat.save();
+
+  return await roomModel.findOne().sort({ timestamp: -1 });
 };

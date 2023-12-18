@@ -8,7 +8,9 @@ export const getChats = async (
   next: NextFunction
 ) => {
   try {
-    const chats = await chatService.getChats();
+    const chats = await chatService.getChats(
+      req.query.roomId as "Alpha" | "Bravo"
+    );
 
     return res.status(200).json({ chats });
   } catch (error: any) {
