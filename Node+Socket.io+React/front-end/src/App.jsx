@@ -1,60 +1,77 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+/* Chat App Demo
+ * @Version 2.0.0
+ *
+ * @Author David Bishop
+ * @CreationDate December 10, 2023
+ * @LastUpdated December 18, 2023
+ *
+ * @Description
+ * This application is a simple chat app that allows users to exchange messages in real-time.
+ *
+ * @Features
+ *  - Real-time messaging using Socket.io.
+ *  - User typing indicators.
+ *  - Joinable chat rooms.
+ *  - Persistent message storage in MongoDB.
+ *  - Redux for state management.
+ */
 
-import socketConfig from "./services/socketConfig";
-import getMessages from "./services/getMessages";
-import emitMessage from "./services/emitMessage";
+import { useEffect } from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+} from "react-router-dom";
 
-import { selectMessages } from "./redux/chatSelectors";
+import socketConfig, { socket } from "./services/socketConfig";
 
-import { socket } from "./services/socketConfig";
-import { ADD_MESSAGE } from "./redux/chatSlice";
+import Home from "./pages/Home";
+import Alpha from "./pages/rooms/Alpha";
+import Bravo from "./pages/rooms/Bravo";
 
 function App() {
-  const [message, setMessage] = useState("");
-  const dispatch = useDispatch();
-  const messages = useSelector(selectMessages);
-
-  // Sends the new message sent by the sender.
-  const handleSendMessage = () => {
-    if (message.trim() !== "") {
-      dispatch(emitMessage(message));
-      setMessage("");
-    }
-  };
-
   useEffect(() => {
     // Establishes the connection to the chat socket.
     socketConfig();
-    // Gets saved messages, if any.
-    dispatch(getMessages());
-    // Gets back the new message sent by the sender.
-    socket.on("get_msg", (chat) => {
-      dispatch(ADD_MESSAGE(chat));
-    });
 
     return () => socket.disconnect();
   }, []);
 
+  const Layout = () => {
+    // TODO:
+    return (
+      <>
+        {/* <Header /> */}
+        <main>
+          <Outlet />
+        </main>
+        {/* <Footer /> */}
+      </>
+    );
+  };
+
   return (
-    <div>
-      <div>
-        {messages.map((msg, i) => (
-          <div key={i}>
-            <strong>{msg.username}:</strong> {msg.message}
-          </div>
-        ))}
-      </div>
-      <div>
-        <input
-          type="text"
-          value={message}
-          placeholder="Message"
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        <button onClick={handleSendMessage}>Send</button>
-      </div>
-    </div>
+    <BrowserRouter
+      basename={
+        process.env.NODE_ENV === "production" ? "/Node_Chat_App_Demos" : ""
+      }
+    >
+      {/* <Suspense fallback={<OverlayLoader />}> */}
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Navigate to="/home" />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/rooms/alpha" element={<Alpha />} />
+          <Route path="/rooms/bravo" element={<Bravo />} />
+
+          {/* <Route path="/error-500" element={<Error500 title="ERROR" />} /> */}
+          {/* <Route path="*" element={<Navigate to="/error-404" />} /> */}
+        </Route>
+      </Routes>
+      {/* </Suspense> */}
+    </BrowserRouter>
   );
 }
 

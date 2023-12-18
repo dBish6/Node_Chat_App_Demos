@@ -7,7 +7,13 @@ const emitMessage = createAsyncThunk(
   async (msg, thunkAPI) => {
     new Promise((resolve, reject) => {
       try {
-        resolve(socket.emit("msg", { user: `User_${socket.id}`, msg }));
+        resolve(
+          socket.emit("msg", {
+            user: `User_${socket.id}`,
+            msg,
+            roomId: thunkAPI.getState().chat.roomId,
+          })
+        );
       } catch (error) {
         console.error("emitMessage error:\n", error.message);
         reject(error);

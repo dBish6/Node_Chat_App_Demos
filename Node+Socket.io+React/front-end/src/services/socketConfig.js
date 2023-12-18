@@ -12,6 +12,7 @@ const socketConfig = () => {
     });
   });
   socket.on("connect", () => {
+    // TODO: Loading
     console.log(`Connection established; ${socket.id}`);
   });
 

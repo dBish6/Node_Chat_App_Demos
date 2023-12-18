@@ -11,7 +11,7 @@ const getMessages = createAsyncThunk(
     try {
       const res = await axios({
         method: "GET",
-        url: `${apiUrl}/chat`,
+        url: `${apiUrl}/chat?roomId=${thunkAPI.getState().chat.roomId}`,
         signal: abortController.signal,
       });
       console.log("res.data", res.data);
