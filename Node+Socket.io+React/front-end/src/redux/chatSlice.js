@@ -6,6 +6,7 @@ export const chatSlice = createSlice({
   name: "chat",
   initialState: {
     messages: [],
+    roomId: null,
   },
   reducers: {
     SET_MESSAGES: (state, action) => {
@@ -13,6 +14,9 @@ export const chatSlice = createSlice({
     },
     ADD_MESSAGE: (state, action) => {
       state.messages = [action.payload, ...state.messages];
+    },
+    SET_ROOM_ID: (state, action) => {
+      state.roomId = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -40,6 +44,6 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { SET_MESSAGES, ADD_MESSAGE } = chatSlice.actions;
+export const { SET_MESSAGES, ADD_MESSAGE, SET_ROOM_ID } = chatSlice.actions;
 
 export default chatSlice.reducer;
