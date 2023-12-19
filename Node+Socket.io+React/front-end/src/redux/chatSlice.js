@@ -5,15 +5,15 @@ import emitMessage from "../services/emitMessage";
 export const chatSlice = createSlice({
   name: "chat",
   initialState: {
-    messages: [],
+    messages: { alpha: [], bravo: [] },
     roomId: null,
   },
   reducers: {
     SET_MESSAGES: (state, action) => {
-      state.messages = [...action.payload];
+      state.messages[state.roomId] = action.payload;
     },
     ADD_MESSAGE: (state, action) => {
-      state.messages = [action.payload, ...state.messages];
+      state.messages[state.roomId].unshift(action.payload);
     },
     SET_ROOM_ID: (state, action) => {
       state.roomId = action.payload;

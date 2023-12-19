@@ -1,8 +1,16 @@
 {
   "name": "front-end",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "author": "David Bishop",
   "description": "Demo React front-end for a chat app.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dBish6/Node_Chat_App_Demos"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "^npm@10.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",

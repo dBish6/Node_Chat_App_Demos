@@ -38,6 +38,9 @@ const Chat = () => {
         <input type="text" placeholder="Message" name="message" />
         <button type="submit">Send</button>
       </form>
+
+      {/* TODO: */}
+      {/* <button>Leave Chat</button> */}
     </div>
   );
 };
