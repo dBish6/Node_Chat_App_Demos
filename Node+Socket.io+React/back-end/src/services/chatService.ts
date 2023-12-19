@@ -6,8 +6,8 @@ import { ChatAlphaSchema, ChatBravoSchema } from "../models/Chat";
 export const getChats = async (roomId: RoomIds) => {
   try {
     const roomModel = model(
-      `chat_${roomId.toLowerCase()}`,
-      roomId === "Alpha" ? ChatAlphaSchema : ChatBravoSchema
+      `chat_${roomId}`,
+      roomId === "alpha" ? ChatAlphaSchema : ChatBravoSchema
     );
 
     return await roomModel.find().sort({ timestamp: -1 }).limit(32);
@@ -18,14 +18,13 @@ export const getChats = async (roomId: RoomIds) => {
 
 export const storeMessage = async ({ user, msg, roomId }: Message) => {
   const roomModel = model(
-    `chat_${roomId.toLowerCase()}`,
-    roomId === "Alpha" ? ChatAlphaSchema : ChatBravoSchema
+    `chat_${roomId}`,
+    roomId === "alpha" ? ChatAlphaSchema : ChatBravoSchema
   );
 
   const chat = new roomModel({
     username: user,
     message: msg,
-    room_id: roomId,
   });
   await chat.save();
 

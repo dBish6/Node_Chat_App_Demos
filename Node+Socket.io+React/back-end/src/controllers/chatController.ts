@@ -1,3 +1,4 @@
+import { RoomIds } from "../typings/RoomIds";
 import { Request, Response, NextFunction } from "express";
 
 import * as chatService from "../services/chatService";
@@ -8,9 +9,7 @@ export const getChats = async (
   next: NextFunction
 ) => {
   try {
-    const chats = await chatService.getChats(
-      req.query.roomId as "Alpha" | "Bravo"
-    );
+    const chats = await chatService.getChats(req.query.roomId as RoomIds);
 
     return res.status(200).json({ chats });
   } catch (error: any) {

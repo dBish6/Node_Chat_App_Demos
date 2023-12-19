@@ -1,1 +1,1 @@
-export type RoomIds = "Alpha" | "Bravo";
+export type RoomIds = "alpha" | "bravo";

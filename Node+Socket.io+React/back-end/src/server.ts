@@ -78,7 +78,7 @@ io.on("connection", (socket) => {
 
     console.log(`${data.user} joined room ${data.roomId}.`);
     socket
-      .to(data.roomId)
+      .in(data.roomId)
       .emit("get_msg", { message: `${data.user} has joined the chat.` });
   });
 
