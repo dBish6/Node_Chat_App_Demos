@@ -6,13 +6,11 @@ import { SET_MESSAGES } from "../redux/chatSlice";
 const getMessages = createAsyncThunk(
   "chat/getMessages",
   async (payload, thunkAPI) => {
-    const abortController = new AbortController();
-
     try {
       const res = await axios({
         method: "GET",
         url: `${apiUrl}/chat?roomId=${thunkAPI.getState().chat.roomId}`,
-        signal: abortController.signal,
+        signal: thunkAPI.signal,
       });
       console.log("res.data", res.data);
 
@@ -24,13 +22,7 @@ const getMessages = createAsyncThunk(
         }
       }
     } catch (error) {
-      if (error.code === "ECONNABORTED" || error.message === "canceled") {
-        console.warn("Request was aborted.");
-      } else {
-        console.error(error);
-        // navigate("/error500");
-      }
-      abortController.abort();
+      console.error("getMessages error:", error.message);
     }
   }
 );

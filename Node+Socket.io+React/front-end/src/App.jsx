@@ -1,12 +1,12 @@
-/* Chat App Demo
- * @Version 2.1.0
+/* Chat App Demo (front-end)
+ * @Version 2.3.3
  *
  * @Author David Bishop
  * @CreationDate December 10, 2023
  * @LastUpdated December 18, 2023
  *
  * @Description
- * This application is a simple chat app that allows users to exchange messages in real-time.
+ * This application is a demo chat app that allows users to exchange messages in real-time.
  *
  * @Features
  *  - Real-time messaging using Socket.io.
@@ -14,6 +14,7 @@
  *  - Joinable chat rooms.
  *  - Persistent message storage in MongoDB.
  *  - Redux for state management.
+ *  - redux-thunk for api calls.
  */
 
 import { useEffect } from "react";
@@ -23,13 +24,17 @@ import {
   Route,
   Navigate,
   Outlet,
+  useNavigate,
 } from "react-router-dom";
 
 import socketConfig, { socket } from "./services/socketConfig";
 
+import history from "./utils/history";
+
 import Home from "./pages/Home";
 import Alpha from "./pages/rooms/Alpha";
 import Bravo from "./pages/rooms/Bravo";
+import { Error404, Error500 } from "./pages/errors";
 
 function App() {
   useEffect(() => {
@@ -40,6 +45,10 @@ function App() {
   }, []);
 
   const Layout = () => {
+    // This just sets useNavigate to my custom history object so I can use useNavigate outside
+    // of react components.
+    history.navigate = useNavigate();
+
     // TODO:
     return (
       <>
@@ -66,8 +75,9 @@ function App() {
           <Route path="/rooms/alpha" element={<Alpha />} />
           <Route path="/rooms/bravo" element={<Bravo />} />
 
-          {/* <Route path="/error-500" element={<Error500 title="ERROR" />} /> */}
-          {/* <Route path="*" element={<Navigate to="/error-404" />} /> */}
+          <Route path="/error-404" element={<Error404 />} />
+          <Route path="/error-500" element={<Error500 />} />
+          <Route path="*" element={<Navigate to="/error-404" />} />
         </Route>
       </Routes>
       {/* </Suspense> */}

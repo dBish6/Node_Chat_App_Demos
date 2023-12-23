@@ -8,6 +8,7 @@ import { selectMessages } from "../redux/chatSelectors";
 import { ADD_MESSAGE } from "../redux/chatSlice";
 
 import handleSubmitMessage from "../utils/handleSubmitMessage";
+import { handleLeaveRoom } from "../utils/roomHandlers";
 
 const Chat = () => {
   const dispatch = useDispatch(),
@@ -39,8 +40,7 @@ const Chat = () => {
         <button type="submit">Send</button>
       </form>
 
-      {/* TODO: */}
-      {/* <button>Leave Chat</button> */}
+      <button onClick={() => handleLeaveRoom()}>Leave Chat</button>
     </div>
   );
 };

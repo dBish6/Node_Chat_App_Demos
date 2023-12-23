@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
+import roomConnect from "../services/roomConnect";
 import getMessages from "../services/getMessages";
 import emitMessage from "../services/emitMessage";
+import history from "../utils/history";
 
 export const chatSlice = createSlice({
   name: "chat",
@@ -20,27 +22,40 @@ export const chatSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(getMessages.pending, (state) => {
-      console.log("Getting messages...");
-    });
-    builder.addCase(getMessages.fulfilled, (state) => {
-      console.log("Messages received!");
-    });
-    builder.addCase(getMessages.rejected, (state, action) => {
-      state.persisterLoading.patch = false;
-      console.error("getMessages error:\n", action.error.message);
-    });
+    builder
+      .addCase(roomConnect.pending, (state) => {
+        console.log("Joining room...");
+      })
+      .addCase(roomConnect.fulfilled, (state) => {
+        console.log(`Room ${state.roomId} joined successfully!`);
+      })
 
-    builder.addCase(emitMessage.pending, (state) => {
-      console.log("Emitted message pending...");
-    });
-    builder.addCase(emitMessage.fulfilled, (state) => {
-      console.log("Emitted message fulfilled!");
-    });
-    builder.addCase(emitMessage.rejected, (state, action) => {
-      state.persisterLoading.patch = false;
-      console.error("emitMessage error:\n", action.error.message);
-    });
+      .addCase(getMessages.pending, (state) => {
+        console.log("Getting messages...");
+      })
+      .addCase(getMessages.fulfilled, (state) => {
+        console.log("Messages received!");
+      })
+
+      .addCase(emitMessage.pending, (state) => {
+        console.log("Emitted message pending...");
+      })
+      .addCase(emitMessage.fulfilled, (state) => {
+        console.log("Emitted message fulfilled!");
+      })
+
+      // Handles errors across all thunks.
+      .addMatcher(
+        (action) => action.type.endsWith("/rejected"),
+        (state, action) => {
+          const error = action.error;
+          if (error.code === "ECONNABORTED" || error.message === "canceled") {
+            console.warn("Request was aborted.");
+          } else {
+            history.push("/error-500");
+          }
+        }
+      );
   },
 });
 
