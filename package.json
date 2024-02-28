@@ -1,0 +1,23 @@
+{
+  "name": "base",
+  "author": "David Bishop",
+  "description": "A demo project that showcases various ways to create a chat feature or chat app with a Node.js application.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dBish6/Node_Chat_App_Demos"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "workspaces": [
+    "Node+Socket.io+React/*"
+  ],
+  "scripts": {
+    "dev:socket.io-front": "npm run dev --workspace front-end",
+    "dev:socket.io-back": "npm run dev --workspace back-end",
+    "build:socket.io-front": "npm run build --workspace front-end",
+    "build:socket.io-back": "npm run build --workspace back-end",
+    "serve:socket.io-back": "npm run serve --workspace back-end",
+    "clean": "npm run clean --workspace front-end --workspace back-end"
+  }
+}
