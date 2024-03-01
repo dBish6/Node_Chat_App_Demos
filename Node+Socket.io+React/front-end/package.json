@@ -8,9 +8,8 @@
     "url": "https://github.com/dBish6/Node_Chat_App_Demos"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=18.0.0"
   },
-  "packageManager": "^npm@10.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -20,13 +19,16 @@
     "clean": "rm -rf node_modules"
   },
   "dependencies": {
+    "@radix-ui/react-icons": "^1.3.0",
+    "@radix-ui/themes": "^2.0.3",
     "@reduxjs/toolkit": "^2.0.1",
     "axios": "^1.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^9.0.3",
     "react-router-dom": "^6.21.0",
-    "socket.io-client": "^4.7.2"
+    "socket.io-client": "^4.7.2",
+    "styled-components": "^6.1.8"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",
