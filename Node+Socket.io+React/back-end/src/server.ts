@@ -1,26 +1,44 @@
-/*
- *  @Author David Bishop
+/* Chat App Demo (back-end)
+ * Version: 2.3.2
+ *
+ * Author: David Bishop
+ * Creation Date: December 10, 2023
+ * Last Updated: March 5, 2024
+ *
+ * Description:
+ * This application is a demo chat app that allows users to exchange messages in real-time.
+ *
+ * Features:
+ *  - Real-time messaging using Socket.io.
+ *  - User typing indicators.
+ *  - Joinable chat rooms.
+ *  - Persistent message storage in MongoDB.
+ *  - Redux for state management.
+ *
+ * Change Log:
+ * The log is in the changelog.txt file at the base of this back-end directory.
  */
 
-import { Join, Message } from "./dtos/Room";
+import { JoinOrLeaveDTO, TypingDTO, MessageDTO } from "./dtos/Room";
+import { SocketCallback } from "./typings/SocketCallback";
 
 import express from "express";
 import dotenv from "dotenv";
 
 import bodyParser from "body-parser";
-// import cookieParser from "cookie-parser";
 import cors from "cors";
 
 import helmet from "helmet";
 import hpp from "hpp";
 import rateLimit from "express-rate-limit";
 import morgan from "morgan";
-
-import chatRouter from "./routes/chatRoute";
+import errorHandler from "./middleware/errorHandler";
 
 import { createServer } from "http";
 import { connect } from "mongoose";
 import { Server } from "socket.io";
+
+import chatRouter from "./routes/chatRoute";
 
 import { storeMessage } from "./services/chatService";
 
@@ -33,15 +51,12 @@ const PORT = Number(process.env.HOST) || 4000,
 // **Middleware**
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// app.use(cookieParser());
-
-const corsOptions = { origin: "http://localhost:3000", credentials: true };
-app.use(cors(corsOptions));
 
 // *Security*
+const corsOptions = { origin: "http://localhost:3000", credentials: true };
+app.use(cors(corsOptions));
 app.use(helmet()); // Protects various HTTP headers that can help defend against common web hacks.
 app.use(hpp()); // Protects against HTTP Parameter Pollution attacks.
-
 // Rate-limiting - used to limit repeated requests.
 app.use((req, res, next) => {
   rateLimit({
@@ -56,9 +71,13 @@ app.use((req, res, next) => {
 morgan.token("all-headers", (req) => {
   return JSON.stringify(req.headers, null, 2);
 });
-app.use(
-  morgan(":method :url :status :response-time ms \n headers: :all-headers")
-);
+// app.use(
+//   morgan(":method :url :status :response-time ms \n headers: :all-headers")
+// );
+app.use(morgan("dev"));
+
+// Custom error handler.
+app.use(errorHandler);
 
 const httpServer = createServer(app);
 export const io = new Server(httpServer, {
@@ -68,32 +87,64 @@ export const io = new Server(httpServer, {
 // TODO: Move
 io.on("connection", (socket) => {
   console.log(`User connected; ${socket.id}.`);
-  // TODO:
-  socket.on("typing", async (user: string) => {
-    socket.broadcast.emit("typing", user);
+
+  socket.on("manage_room", (data: JoinOrLeaveDTO, callback: SocketCallback) => {
+    const { roomId, user, type } = data;
+
+    try {
+      if (roomId) {
+        socket[type](roomId);
+
+        const isType = type === "join" ? "joined" : "left";
+        console.log(`${user} ${isType} room ${roomId}.`);
+
+        // This message is in a object to resemble how the chat messages look in the db, sort of, if you were wondering.
+        io.in(roomId).emit("get_msg", {
+          message: `${user} has ${isType} the chat.`,
+        });
+
+        callback(null, { message: `You joined the chat.` });
+      } else {
+        callback("No room id was given in the request.");
+      }
+    } catch (error: any) {
+      console.error("manage_room socket error:\n", error.message);
+      callback(error.message);
+    }
   });
 
-  socket.on("join_room", (data: Join) => {
-    socket.join(data.roomId);
+  socket.on("typing", (data: TypingDTO, callback: SocketCallback) => {
+    const { user, roomId, isTyping } = data;
+    console.log("User typing", data);
 
-    console.log(`${data.user} joined room ${data.roomId}.`);
-    socket
-      .in(data.roomId)
-      .emit("get_msg", { message: `${data.user} has joined the chat.` });
+    try {
+      if (!user) {
+        return callback("No user was given in the request.");
+      }
+
+      socket.in(roomId).emit("user_typing", { user, isTyping });
+      isTyping
+        ? callback(null, "User typing emitted.")
+        : callback(null, "User stopped typing.");
+    } catch (error: any) {
+      console.error("typing socket error:\n", error.message);
+      callback(error.message);
+    }
   });
 
-  socket.on("leave_room", (data: Join) => {
-    socket.leave(data.roomId);
-
-    console.log(`${data.user} left room ${data.roomId}.`);
-  });
-
-  socket.on("msg", async (data: Message) => {
+  socket.on("msg", async (data: MessageDTO, callback: SocketCallback) => {
     console.log("Received message: ", data);
 
-    const sentMessage = await storeMessage({ ...data });
+    // TODO: You can maybe send the user id for the document stored?
+    try {
+      const sentMessage = await storeMessage({ ...data });
+      io.in(data.roomId).emit("get_msg", sentMessage); // Sends back the message for all users connected to the room.
 
-    io.to(data.roomId).emit("get_msg", sentMessage);
+      callback(null, "Message emitted.");
+    } catch (error: any) {
+      console.error("msg socket error:\n", error.message);
+      callback(error.message);
+    }
   });
 
   socket.on("disconnect", () => {

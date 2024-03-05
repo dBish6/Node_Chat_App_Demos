@@ -1,7 +1,9 @@
 import { RoomIds } from "../typings/RoomIds";
-import { Message } from "../dtos/Room";
+import { MessageDTO } from "../dtos/Room";
+
 import { model } from "mongoose";
 import { ChatAlphaSchema, ChatBravoSchema } from "../models/Chat";
+import CustomError from "../utils/CustomError";
 
 export const getChats = async (roomId: RoomIds) => {
   try {
@@ -12,11 +14,12 @@ export const getChats = async (roomId: RoomIds) => {
 
     return await roomModel.find().sort({ timestamp: -1 }).limit(32);
   } catch (error: any) {
-    throw new Error("getChats error;\n" + error.message);
+    throw new CustomError("getChats service error", error.message);
   }
 };
 
-export const storeMessage = async ({ user, msg, roomId }: Message) => {
+export const storeMessage = async ({ user, msg, roomId }: MessageDTO) => {
+  // TODO: Error handling?
   const roomModel = model(
     `chat_${roomId}`,
     roomId === "alpha" ? ChatAlphaSchema : ChatBravoSchema

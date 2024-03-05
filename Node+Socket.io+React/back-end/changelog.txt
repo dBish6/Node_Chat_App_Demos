@@ -1,0 +1,10 @@
+Socket.io Back-end
+
+v2.3.2
+minor:
+- typing socket added.
+- join_room socket removed and now there is a manage_room socket for both join and leave messages.
+- CustomError class and errorHandler for HTTP.
+patch:
+- Proper error handling implemented for sockets.
+- DTO types are actually named as a DTO type.

@@ -1,5 +1,6 @@
 import { RoomIds } from "../typings/RoomIds";
 import { Request, Response, NextFunction } from "express";
+import CustomError from "../utils/CustomError";
 
 import * as chatService from "../services/chatService";
 
@@ -13,7 +14,10 @@ export const getChats = async (
 
     return res.status(200).json({ chats });
   } catch (error: any) {
-    // error.reason = "failed to send chat.";
-    next(error);
+    next(
+      error instanceof CustomError
+        ? error
+        : new CustomError("getChats controller error", error.message, 500)
+    );
   }
 };
