@@ -19,3 +19,8 @@ patch:
 - handleSubmitMessage file fixed, now keeps the scroll at the bottom and resets the typing indicator and input value.
 - debounce and delays added to emitUserTyping for performance.
 - The roomHandlers doesn't redirect anymore, the emitters do.
+
+v3.6.16
+patch:
+- Chat bravo styles.
+- New text at the home page.

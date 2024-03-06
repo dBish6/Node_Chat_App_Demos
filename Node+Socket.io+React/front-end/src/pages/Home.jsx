@@ -13,13 +13,17 @@ const Home = () => {
         backgroundColor: "var(--gray-a2)",
       }}
     >
-      <Heading as="h2" size="7" align="center" color="teal" mb="3">
+      <Heading as="h2" size="7" align="center" color="teal" mb="2">
         Start By Joining a Room
       </Heading>
-      <Text as="p" size="3" align="center" color="gray" mb="6">
+      <Text as="p" size="3" align="center" color="gray" mb="4">
         Welcome! This is a demo chat room app. There are two rooms{" "}
         <Text weight="medium">Alpha</Text> and{" "}
         <Text weight="medium">Bravo</Text>, join either one!
+      </Text>
+      <Text as="p" size="3" align="center" color="gray" mb="6">
+        When you join a room, you can open another browser or open a
+        private/incognito window and talk to yourself!
       </Text>
       <Flex>
         <Button
