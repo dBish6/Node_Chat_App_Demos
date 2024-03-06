@@ -4,7 +4,7 @@
   "description": "A demo project that showcases various ways to create a chat feature or chat app with a Node.js application.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dBish6/Node_Chat_App_Demos"
+    "url": "git+https://github.com/dBish6/Node_Chat_App_Demos.git"
   },
   "engines": {
     "node": ">=18.0.0"

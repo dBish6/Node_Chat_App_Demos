@@ -1,6 +1,6 @@
 {
   "name": "front-end",
-  "version": "2.3.3",
+  "version": "3.6.14",
   "author": "David Bishop",
   "description": "Demo React front-end for a chat app.",
   "repository": {
@@ -22,7 +22,9 @@
     "@radix-ui/react-icons": "^1.3.0",
     "@radix-ui/themes": "^2.0.3",
     "@reduxjs/toolkit": "^2.0.1",
+    "async-delay-callback": "^1.0.2",
     "axios": "^1.6.2",
+    "lodash.debounce": "^4.0.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^9.0.3",

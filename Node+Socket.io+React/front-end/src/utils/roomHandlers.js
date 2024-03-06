@@ -1,14 +1,8 @@
 import { store } from "../redux/store";
-import roomConnect from "../services/roomConnect";
-import history from "./history";
+import emitManageRoom from "../services/emitManageRoom";
 
-export const handleJoinRoom = (room) => {
-  const roomId = room.toLowerCase();
-  store.dispatch(roomConnect({ type: "join", roomId }));
-  history.push(`/rooms/${roomId}`);
-};
+export const handleJoinRoom = async (room) =>
+  store.dispatch(emitManageRoom({ type: "join", roomId: room.toLowerCase() }));
 
-export const handleLeaveRoom = () => {
-  store.dispatch(roomConnect({ type: "leave" }));
-  history.push("/home");
-};
+export const handleLeaveRoom = async (room) =>
+  store.dispatch(emitManageRoom({ type: "leave", roomId: room.toLowerCase() }));

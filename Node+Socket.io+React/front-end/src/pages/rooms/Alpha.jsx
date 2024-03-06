@@ -1,11 +1,15 @@
+import { Card, Heading } from "@radix-ui/themes";
+import { containerStyles } from ".";
 import Chat from "../../components/Chat";
 
 const Alpha = () => {
   return (
-    <section>
-      <h2>Chat Room Alpha</h2>
+    <Card style={containerStyles}>
+      <Heading as="h2" size="8" mb="3" color="teal">
+        Chat Room Alpha
+      </Heading>
       <Chat />
-    </section>
+    </Card>
   );
 };
 

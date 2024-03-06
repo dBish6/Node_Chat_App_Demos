@@ -1,23 +1,22 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { socket } from "./socketConfig";
-import { ADD_MESSAGE } from "../redux/chatSlice";
 
 // Thunk to send a message.
-const emitMessage = createAsyncThunk(
-  "chat/emitMessage",
-  async (msg, thunkAPI) => {
+const emitUserTyping = createAsyncThunk(
+  "chat/emitUserTyping",
+  async (text, thunkAPI) => {
     try {
-      return new Promise((resolve) =>
+      return new Promise((resolve, reject) =>
         socket.emit(
-          "msg",
+          "typing",
           {
             user: `User_${socket.id}`,
-            msg,
             roomId: thunkAPI.getState().chat.roomId,
+            isTyping: text.length ? true : false,
           },
           (error, res) => {
             if (error) {
-              console.error("emitMessage server res error:\n", error);
+              console.error("emitUserTyping server res error:\n", error);
               reject(error);
             } else {
               resolve(res);
@@ -26,10 +25,10 @@ const emitMessage = createAsyncThunk(
         )
       );
     } catch (error) {
-      console.error("emitMessage error:\n", error.message);
+      console.error("emitUserTyping error:\n", error.message);
       reject(error);
     }
   }
 );
 
-export default emitMessage;
+export default emitUserTyping;

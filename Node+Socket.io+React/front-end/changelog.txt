@@ -1,0 +1,21 @@
+Socket.io Front-end
+
+v3.6.14
+major:
+- Huge styles overhaul to everything, with radix-ui.
+minor:
+- Random user avatars added.
+- Typing emitter added.
+- setupSocketListeners file added for all chat socket listeners on load.
+patch:
+- main.jsx change to index.jsx (personal preference).
+- User left the room message now displays.
+- Socket emits actually resolve on their response now.
+- Proper error handling added to the socket services.
+- getMessages file name changed to getInitialMessages.
+- roomConnect socket changed to manage_room and file name change.
+- Tons of refactoring.
+- The chat scroll actually stays at the bottom on load and when the current user sends a message.
+- handleSubmitMessage file fixed, now keeps the scroll at the bottom and resets the typing indicator and input value.
+- debounce and delays added to emitUserTyping for performance.
+- The roomHandlers doesn't redirect anymore, the emitters do.

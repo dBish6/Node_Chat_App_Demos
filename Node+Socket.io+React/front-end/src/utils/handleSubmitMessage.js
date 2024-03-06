@@ -1,14 +1,19 @@
+import { delay } from "async-delay-callback";
 import { store } from "../redux/store";
 import emitMessage from "../services/emitMessage";
+import emitUserTyping from "../services/emitUserTyping";
 
-export default (e) => {
+export default async (e) => {
   e.preventDefault();
-  console.log("e.target", e.target);
+  let input = e.target.querySelector("input");
 
-  const message = e.target.children[0].value;
-  if (message.trim() !== "") {
-    store.dispatch(emitMessage(message));
+  if (input.value.trim() !== "") {
+    await store.dispatch(emitMessage(input.value));
+    // Keeps the scroll to the bottom if you send a message.
+    const scrollAreaInner = document.querySelector(".rt-ScrollAreaViewport");
+    scrollAreaInner.scrollTop = scrollAreaInner.scrollHeight;
+    // To stop the typing indicator and to clear the input.
+    input.value = "";
+    delay(850, () => store.dispatch(emitUserTyping(input.value)));
   }
-
-  e.target.reset();
 };
