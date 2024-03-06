@@ -36,7 +36,7 @@ const Chat = () => {
     messages = useSelector(selectMessages);
 
   useEffect(() => {
-    // Gets saved messages, if any.
+    // Gets messages from the db, if any.
     dispatch(getInitialMessages());
     // All chat listeners.
     setupSocketListeners(setUsersTyping);

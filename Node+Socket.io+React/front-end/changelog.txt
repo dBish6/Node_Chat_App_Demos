@@ -24,3 +24,7 @@ v3.6.16
 patch:
 - Chat bravo styles.
 - New text at the home page.
+
+v3.6.17
+patch:
+- Fixed how leave room wasn't getting the roomId.
