@@ -33,7 +33,7 @@ const Home = () => {
           onClick={(e) => handleJoinRoom(e.target.innerText.toLowerCase())}
           style={{ flexGrow: 1 }}
         >
-          Alpha <ArrowRightIcon />
+          Alpha <ArrowRightIcon width="18" height="18" />
         </Button>
         <Button
           variant="soft"
@@ -41,7 +41,7 @@ const Home = () => {
           onClick={(e) => handleJoinRoom(e.target.innerText.toLowerCase())}
           style={{ flexGrow: 1 }}
         >
-          Bravo <ArrowRightIcon />
+          Bravo <ArrowRightIcon width="18" height="18" />
         </Button>
       </Flex>
     </Card>

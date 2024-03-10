@@ -15,7 +15,6 @@ export const chatSlice = createSlice({
     SET_ROOM_ID: (state, action) => {
       state.roomId = action.payload;
     },
-    // TODO: You can probably use one now.
     SET_MESSAGES: (state, action) => {
       state.messages[state.roomId] = [
         ...state.messages[state.roomId],

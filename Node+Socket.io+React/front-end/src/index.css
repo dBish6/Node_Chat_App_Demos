@@ -8,6 +8,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.grid {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+}
+
 body {
   margin: 0;
 }
@@ -15,5 +21,4 @@ body {
 main {
   display: grid;
   place-items: center;
-  min-height: 100vh;
 }

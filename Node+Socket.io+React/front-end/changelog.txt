@@ -28,3 +28,7 @@ patch:
 v3.6.17
 patch:
 - Fixed how leave room wasn't getting the roomId.
+
+v3.7.17
+minor:
+- Header and footer added.
