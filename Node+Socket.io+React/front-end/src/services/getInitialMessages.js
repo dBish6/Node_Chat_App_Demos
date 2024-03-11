@@ -6,7 +6,7 @@ import { SET_MESSAGES } from "../redux/chatSlice";
 
 const getInitialMessages = createAsyncThunk(
   "chat/getInitialMessages",
-  async (payload, thunkAPI) => {
+  async (setLoading, thunkAPI) => {
     // console.log(
     //   "thunkAPI.getState().chat.roomId",
     //   thunkAPI.getState().chat.roomId
@@ -17,6 +17,7 @@ const getInitialMessages = createAsyncThunk(
       alert(
         "The roomId wasn't set, probably because you refreshed the page. I am working on persisting the roomId."
       );
+      window.location.reload();
     }
 
     try {
@@ -37,6 +38,8 @@ const getInitialMessages = createAsyncThunk(
       return res;
     } catch (error) {
       console.error("getInitialMessages error:", error.message);
+    } finally {
+      setLoading({ value: false, error: false });
     }
   }
 );

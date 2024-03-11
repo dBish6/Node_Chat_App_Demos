@@ -1,15 +1,16 @@
 /* Chat App Demo (front-end)
- * Version: 3.6.14
+ * Version: 3.7.22
  *
  * Author: David Bishop
  * Creation Date: December 10, 2023
- * Last Updated: March 5, 2024
+ * Last Updated: March 10, 2024
  *
  * Description:
  * This application is a demo chat app that allows users to exchange messages in real-time.
  *
  * Features:
  *  - Real-time messaging using Socket.io.
+ *  - Randomized user names and avatar images, since this is a demo.
  *  - User typing indicators.
  *  - Joinable chat rooms.
  *  - Persistent message storage in MongoDB.
@@ -34,6 +35,7 @@ import socketConfig, { socket } from "./services/socketConfig";
 
 import history from "./utils/history";
 
+import { Header, Footer } from "./components/partials";
 import Home from "./pages/Home";
 import Alpha from "./pages/rooms/Alpha";
 import Bravo from "./pages/rooms/Bravo";
@@ -54,14 +56,15 @@ function App() {
     // of react components.
     history.navigate = useNavigate();
 
-    // TODO:
     return (
       <>
-        {/* <Header /> */}
-        <main>
-          <Outlet />
-        </main>
-        {/* <Footer /> */}
+        <div role="presentation" className="grid">
+          <Header />
+          <main>
+            <Outlet />
+          </main>
+          <Footer />
+        </div>
       </>
     );
   };

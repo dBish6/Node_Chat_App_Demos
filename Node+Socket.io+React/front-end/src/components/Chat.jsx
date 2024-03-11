@@ -29,15 +29,15 @@ const Chat = () => {
   const scrollAreaRef = useRef(null),
     avatarCacheRef = useRef({});
 
-  const [loading, setLoading] = useState({ value: true, error: false });
-  const [usersTyping, setUsersTyping] = useState(new Set([]));
+  const [loading, setLoading] = useState({ value: true, error: false }),
+    [usersTyping, setUsersTyping] = useState(new Set([]));
 
   const dispatch = useDispatch(),
     messages = useSelector(selectMessages);
 
   useEffect(() => {
     // Gets messages from the db, if any.
-    dispatch(getInitialMessages());
+    dispatch(getInitialMessages(setLoading));
     // All chat listeners.
     setupSocketListeners(setUsersTyping);
 
@@ -45,10 +45,11 @@ const Chat = () => {
   }, []);
 
   const onChange = (e) =>
-    debounce(dispatch(emitUserTyping(e.target.value)), 1400);
+    dispatch(debounce(emitUserTyping(e.target.value), 1400));
 
   useEffect(() => {
     if (messages.length > 1) {
+      setLoading({ value: true, error: false });
       messages.forEach((msg) => {
         const userId = msg.username;
         const cachedSrc = avatarCacheRef.current[userId];
@@ -60,8 +61,8 @@ const Chat = () => {
           avatarCacheRef.current[userId] = newSrc;
         }
       });
-      console.log("avatarCacheRef.current", avatarCacheRef.current);
       setLoading({ value: false, error: false });
+      console.log("avatarCacheRef.current", avatarCacheRef.current);
     }
   }, [messages]);
   useEffect(() => {
@@ -99,7 +100,7 @@ const Chat = () => {
         style={{ marginBlock: "0.5rem 2rem" }}
       >
         {!loading.value ? (
-          messages.length ? (
+          messages.length > 1 ? (
             // prettier-ignore
             messages.slice().reverse().map((msg, i) => (
                 <Fragment key={i}>
@@ -236,7 +237,7 @@ const Chat = () => {
                   borderBottomLeftRadius: 0,
                 }}
               >
-                <PaperPlaneIcon height="14" width="14" />
+                <PaperPlaneIcon width="14" height="14" />
               </IconButton>
             </TextField.Slot>
           </TextField.Root>

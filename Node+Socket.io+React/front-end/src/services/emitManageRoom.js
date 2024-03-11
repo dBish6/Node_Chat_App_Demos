@@ -18,6 +18,7 @@ const emitManageRoom = createAsyncThunk(
         socket.emit(
           "manage_room",
           {
+            userId: socket.id,
             roomId,
             user: `User_${socket.id}`,
             type,

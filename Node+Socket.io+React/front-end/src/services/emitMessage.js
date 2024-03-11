@@ -1,6 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { socket } from "./socketConfig";
-import { ADD_MESSAGE } from "../redux/chatSlice";
 
 // Thunk to send a message.
 const emitMessage = createAsyncThunk(
@@ -11,6 +10,7 @@ const emitMessage = createAsyncThunk(
         socket.emit(
           "msg",
           {
+            userId: socket.id,
             user: `User_${socket.id}`,
             msg,
             roomId: thunkAPI.getState().chat.roomId,

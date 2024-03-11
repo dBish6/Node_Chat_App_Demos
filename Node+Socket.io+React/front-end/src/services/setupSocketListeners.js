@@ -6,7 +6,6 @@ const setupSocketListeners = (setUsersTyping) => {
   // Listens for user joined or left messages and or new chat messages.
   try {
     socket.on("get_msg", (message) => {
-      console.log("activity msg message", message);
       store.dispatch(ADD_MESSAGE(message));
       // TODO: Play sound.
     });
@@ -17,7 +16,6 @@ const setupSocketListeners = (setUsersTyping) => {
   // Listens for users that are typing.
   try {
     socket.on("user_typing", (data) => {
-      console.log("user typing", data);
       data.isTyping
         ? setUsersTyping((prev) => new Set([...prev, data.user]))
         : setUsersTyping(

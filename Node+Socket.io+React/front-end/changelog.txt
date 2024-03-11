@@ -32,3 +32,11 @@ patch:
 v3.7.17
 minor:
 - Header and footer added.
+
+v3.7.22
+patch:
+- "Empty Chat Room" message fix.
+- Chat loading fix.
+- 'userId' is now sent in emitMessage and emitManageRoom.
+- emitUserTyping debounce in the Chat fix.
+- socketConfig now uses chat namespace instead of default.
