@@ -8,3 +8,12 @@ minor:
 patch:
 - Proper error handling implemented for sockets.
 - DTO types are actually named as a DTO type.
+
+v3.4.4
+major:
+- huge refactor; separates concerns by a api folder and a sockets folder.
+minor:
+- userJoined track added.
+patch:
+- the room schemas now use the user id as the _id.
+- Collection name added to the chat schemas because it kept pluralizing the names; chat_alpha to chat_alphas (not cool). 

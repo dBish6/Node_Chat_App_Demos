@@ -1,4 +1,4 @@
-import { RoomIds } from "../typings/RoomIds";
+import { RoomIds } from "../../typings/RoomIds";
 import { Request, Response, NextFunction } from "express";
 import CustomError from "../utils/CustomError";
 

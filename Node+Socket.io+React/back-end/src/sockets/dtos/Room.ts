@@ -1,18 +1,15 @@
-import { RoomIds } from "../typings/RoomIds";
+import { RoomIds } from "../../typings/RoomIds";
 
-interface SocketDTO {
+export interface SocketDTO {
   user: string;
   roomId: RoomIds;
 }
 
 export interface JoinOrLeaveDTO extends SocketDTO {
+  userId: string;
   type: "join" | "leave";
 }
 
 export interface TypingDTO extends SocketDTO {
   isTyping: boolean;
-}
-
-export interface MessageDTO extends SocketDTO {
-  msg: string;
 }
