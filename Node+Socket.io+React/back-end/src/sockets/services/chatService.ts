@@ -12,9 +12,11 @@ import { storeMessage } from "../../api/services/chatService";
 
 interface UsersJoined {
   userId: string;
+  user: string;
   roomId: RoomIds;
 }
 
+// TODO: Custom logger.
 class ChatService {
   private socket: Socket;
   private io: Namespace;
@@ -29,7 +31,13 @@ class ChatService {
 
   // Handles joins and leaves of chat rooms and the amount users in the room.
   manageRoom(data: JoinOrLeaveDTO, callback: SocketCallback) {
-    const { userId, roomId, user, type } = data;
+    const { roomId, user, type } = data;
+
+    if (!["join", "leave"].includes(type)) {
+      throw Error(
+        "manage_room socket error:\n There was no data provide for a join or the type isn't valid; 'leave' or 'join'."
+      );
+    }
 
     try {
       if (roomId) {
@@ -43,25 +51,59 @@ class ChatService {
           message: `${user} has ${isType} the chat.`,
         });
 
-        if (
-          type === "join" &&
-          !this.usersJoined.alpha.find((u) => u.userId === userId)
-        )
-          this.usersJoined.alpha.push({ userId, roomId });
-        // TODO: Should probably have this for disconnect too.
-        if (type === "leave")
-          this.usersJoined.alpha.filter(
-            (user) => user.userId !== this.socket.id
-          );
-        // console.log("usersJoined", this.usersJoined);
-
-        callback(null, { message: `You joined the chat.` });
+        const userList = this.userList(data);
+        type === "join"
+          ? callback(null, {
+              userList,
+              message: { message: "You joined the chat." },
+            })
+          : callback(null, "You left the chat.");
       } else {
         callback("No room id was given in the request.");
       }
     } catch (error: any) {
       console.error("manage_room socket error:\n", error.message);
       callback(error.message);
+    }
+  }
+  // Handles and emits the joined users list in each room (Joins doesn't happen from a emit).
+  userList(data: JoinOrLeaveDTO, callback?: SocketCallback) {
+    const { userId, roomId, user, type } = data || {};
+    console.log(
+      `${user} is being ${
+        type === "join" ? "added" : "removed"
+      } to the ${roomId} user list.`
+    );
+
+    try {
+      if (roomId) {
+        if (type === "leave") {
+          this.usersJoined[roomId] = this.usersJoined[roomId].filter(
+            (user) => user.userId !== this.socket.id
+          );
+
+          this.io.in(roomId).emit("user_list", this.usersJoined);
+          callback!(
+            null,
+            `${user} has been removed from the ${roomId} user list.`
+          );
+        } else if (
+          type === "join" &&
+          data &&
+          !this.usersJoined[roomId].find((u) => u.userId === userId)
+        ) {
+          this.usersJoined[roomId].push({ userId, user, roomId });
+
+          this.io.in(roomId).emit("user_list", this.usersJoined);
+          return this.usersJoined;
+        }
+        // console.log("usersJoined", this.usersJoined);
+      } else {
+        callback!("No room id was given in the request.");
+      }
+    } catch (error: any) {
+      console.error("manage_room socket error:\n", error.message);
+      if (callback) callback(error.message);
     }
   }
 
