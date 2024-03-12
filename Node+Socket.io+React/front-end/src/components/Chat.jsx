@@ -25,6 +25,8 @@ import { selectMessages } from "../redux/chatSelectors";
 import handleSubmitMessage from "../utils/handleSubmitMessage";
 import { handleLeaveRoom } from "../utils/roomHandlers";
 
+import { Spinner } from "./loaders";
+
 const Chat = () => {
   const scrollAreaRef = useRef(null),
     avatarCacheRef = useRef({});
@@ -41,7 +43,7 @@ const Chat = () => {
     // All chat listeners.
     setupSocketListeners(setUsersTyping);
 
-    return () => socket.disconnect();
+    return () => socket.removeAllListeners();
   }, []);
 
   const onChange = (e) =>
@@ -85,11 +87,12 @@ const Chat = () => {
   return (
     <Flex
       direction="column"
-      rows="2"
       style={{
+        maxWidth: "532px",
         height: "calc(100% - 52px)",
         backgroundColor: "var(--gray-a2)",
-        paddingInline: "1rem",
+        paddingInline: "0.75rem",
+        borderRadius: "var(--radius-3)",
       }}
     >
       <ScrollArea
@@ -97,7 +100,7 @@ const Chat = () => {
         type="always"
         scrollbars="vertical"
         grow="1"
-        style={{ marginBlock: "0.5rem 2rem" }}
+        style={{ position: "relative", marginBlock: "0.5rem 2rem" }}
       >
         {!loading.value ? (
           messages.length > 1 ? (
@@ -167,13 +170,18 @@ const Chat = () => {
             </Text>
           )
         ) : (
-          <Text color="gray" size="4">
-            Loading...
-          </Text>
+          <Spinner
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "45%",
+              transform: "translateX(-50%)",
+            }}
+          />
         )}
       </ScrollArea>
 
-      <Box position="relative" mb="2">
+      <Box position="relative" mb="3">
         {/* TODO: Add scrolling to this. */}
         {Array.from(usersTyping).length > 0 && (
           <Flex

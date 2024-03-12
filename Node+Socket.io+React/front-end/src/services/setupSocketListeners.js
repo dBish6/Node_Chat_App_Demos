@@ -1,8 +1,17 @@
 import { socket } from "./socketConfig";
 import { store } from "../redux/store";
-import { ADD_MESSAGE } from "../redux/chatSlice";
+import { SET_USER_LIST, ADD_MESSAGE } from "../redux/chatSlice";
 
 const setupSocketListeners = (setUsersTyping) => {
+  // Listens for a updated user list for showing the joined users.
+  try {
+    socket.on("user_list", (data) => {
+      store.dispatch(SET_USER_LIST(data));
+    });
+  } catch (error) {
+    console.error("user_list listener error:\n", error.message);
+  }
+
   // Listens for user joined or left messages and or new chat messages.
   try {
     socket.on("get_msg", (message) => {

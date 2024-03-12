@@ -40,3 +40,12 @@ patch:
 - 'userId' is now sent in emitMessage and emitManageRoom.
 - emitUserTyping debounce in the Chat fix.
 - socketConfig now uses chat namespace instead of default.
+
+v3.9.25
+minor:
+- Loading spinner added.
+- Functionally for joined users and component added to the chat.
+patch:
+- Replaced the socket.disconnect() in the Chat component with removeAllListeners().
+- Small room components refactor.
+- emitManageRoom better error handling.

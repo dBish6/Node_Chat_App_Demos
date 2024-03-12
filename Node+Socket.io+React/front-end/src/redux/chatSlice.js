@@ -9,11 +9,15 @@ export const chatSlice = createSlice({
   name: "chat",
   initialState: {
     roomId: null,
+    userList: { alpha: [], bravo: [] },
     messages: { alpha: [], bravo: [] },
   },
   reducers: {
     SET_ROOM_ID: (state, action) => {
       state.roomId = action.payload;
+    },
+    SET_USER_LIST: (state, action) => {
+      state.userList = action.payload;
     },
     SET_MESSAGES: (state, action) => {
       state.messages[state.roomId] = [
@@ -29,10 +33,10 @@ export const chatSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(emitManageRoom.pending, (state) => {
-        console.log("Joining room...");
+        console.log("Joining or leaving room...");
       })
       .addCase(emitManageRoom.fulfilled, (state) => {
-        console.log(`Room ${state.roomId} joined successfully!`);
+        console.log(`Room ${state.roomId} joined or left successfully!`);
       })
 
       .addCase(getInitialMessages.pending, (state) => {
@@ -71,6 +75,7 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { SET_ROOM_ID, SET_MESSAGES, ADD_MESSAGE } = chatSlice.actions;
+export const { SET_ROOM_ID, SET_USER_LIST, SET_MESSAGES, ADD_MESSAGE } =
+  chatSlice.actions;
 
 export default chatSlice.reducer;
