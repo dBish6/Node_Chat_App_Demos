@@ -11,7 +11,7 @@ const JoinedUsers = () => {
     <Flex
       direction="column"
       style={{
-        maxWidth: "171px",
+        width: "171px",
         backgroundColor: "var(--gray-a2)",
         padding: "0.5rem 0.5rem 0.75rem 0.75rem",
         borderRadius: "var(--radius-3)",

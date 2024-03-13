@@ -78,7 +78,10 @@ const Chat = () => {
   useEffect(() => {
     if (!loading.value) {
       // Keeps the scroll of the ScrollArea at the bottom.
-      const scrollAreaInner = document.querySelector(".rt-ScrollAreaViewport");
+      const scrollAreaInner = document.querySelector(
+        ".chatScroll .rt-ScrollAreaViewport"
+      );
+
       if (scrollAreaInner)
         scrollAreaInner.scrollTop = scrollAreaInner.scrollHeight;
     }
@@ -97,6 +100,7 @@ const Chat = () => {
     >
       <ScrollArea
         ref={scrollAreaRef}
+        className="chatScroll"
         type="always"
         scrollbars="vertical"
         grow="1"
@@ -182,14 +186,16 @@ const Chat = () => {
       </ScrollArea>
 
       <Box position="relative" mb="3">
-        {/* TODO: Add scrolling to this. */}
         {Array.from(usersTyping).length > 0 && (
-          <Flex
-            position="absolute"
+          <ScrollArea
+            scrollbars="horizontal"
             width="100%"
-            gap="2"
             style={{
-              top: -18,
+              display: "flex",
+              position: "absolute",
+              gap: "8px",
+              top: -23,
+              height: "fit-content",
               overflow: "hidden",
             }}
           >
@@ -220,7 +226,7 @@ const Chat = () => {
                 is typing...
               </Text>
             ))}
-          </Flex>
+          </ScrollArea>
         )}
 
         <form onSubmit={(e) => handleSubmitMessage(e)}>

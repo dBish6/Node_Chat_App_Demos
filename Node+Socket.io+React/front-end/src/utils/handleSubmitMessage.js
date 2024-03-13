@@ -10,7 +10,9 @@ export default async (e) => {
   if (input.value.trim() !== "") {
     await store.dispatch(emitMessage(input.value));
     // Keeps the scroll to the bottom if you send a message.
-    const scrollAreaInner = document.querySelector(".rt-ScrollAreaViewport");
+    const scrollAreaInner = document.querySelector(
+      ".chatScroll .rt-ScrollAreaViewport"
+    );
     scrollAreaInner.scrollTop = scrollAreaInner.scrollHeight;
     // To stop the typing indicator and to clear the input.
     input.value = "";

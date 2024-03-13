@@ -1,5 +1,5 @@
 /* Chat App Demo (front-end)
- * Version: 3.7.22
+ * Version: 3.10.27
  *
  * Author: David Bishop
  * Creation Date: December 10, 2023
@@ -21,7 +21,7 @@
  * The log is in the changelog.txt file at the base of this front-end directory.
  */
 
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   BrowserRouter,
   Routes,
@@ -35,6 +35,7 @@ import socketConfig, { socket } from "./services/socketConfig";
 
 import history from "./utils/history";
 
+import { OverlayLoader } from "./components/loaders";
 import { Header, Footer } from "./components/partials";
 import Home from "./pages/Home";
 import Alpha from "./pages/rooms/Alpha";
@@ -44,6 +45,8 @@ import { Error404, Error500 } from "./pages/errors";
 import "@radix-ui/themes/styles.css";
 
 function App() {
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     // Establishes the connection to the chat socket.
     socketConfig();
@@ -58,6 +61,7 @@ function App() {
 
     return (
       <>
+        {loading && <OverlayLoader setLoading={setLoading} />}
         <div role="presentation" className="grid">
           <Header />
           <main>
@@ -75,7 +79,6 @@ function App() {
         process.env.NODE_ENV === "production" ? "/Node_Chat_App_Demos" : ""
       }
     >
-      {/* <Suspense fallback={<OverlayLoader />}> */}
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Navigate to="/home" />} />
@@ -88,7 +91,6 @@ function App() {
           <Route path="*" element={<Navigate to="/error-404" />} />
         </Route>
       </Routes>
-      {/* </Suspense> */}
     </BrowserRouter>
   );
 }
