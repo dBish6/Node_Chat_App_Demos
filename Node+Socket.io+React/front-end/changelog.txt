@@ -56,3 +56,7 @@ minor:
 patch:
 - Keeping the scroll to the bottom for the chat fixed, since adding the other ScrollArea for the roommates broke it.
 - Scrolling added to the is typing indictors.
+
+v3.10.28
+patch:
+- Max reties added to the overlay loader.

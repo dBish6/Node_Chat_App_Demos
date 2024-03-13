@@ -3,6 +3,7 @@ import * as Progress from "@radix-ui/react-progress";
 import { useState, useEffect } from "react";
 
 import { delay } from "async-delay-callback";
+import history from "../../utils/history";
 import { socket } from "../../services/socketConfig";
 
 const OverlayLoader = ({ setLoading }) => {
@@ -21,12 +22,20 @@ const OverlayLoader = ({ setLoading }) => {
         await delay(1500, () => setProgress(100));
         loadingComplete();
       } else {
+        let reties = 0;
         checkConnectionInterval = setInterval(() => {
+          if (reties === 8) {
+            clearInterval(checkConnectionInterval);
+            loadingComplete();
+            history.push("/error-500");
+          }
+
           if (socket.connected) {
             clearInterval(checkConnectionInterval);
             setProgress(100);
             loadingComplete();
           }
+          reties++;
         }, 1000);
       }
 
