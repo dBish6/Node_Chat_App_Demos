@@ -1,6 +1,6 @@
 {
   "name": "back-end",
-  "version": "3.4.5",
+  "version": "3.5.10",
   "author": "David Bishop",
   "description": "Demo Node server for a chat app.",
   "repository": {
@@ -14,8 +14,8 @@
   "type": "module",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon",
-    "build": "webpack --config webpack.config.cjs",
-    "serve": "cross-env NODE_ENV=production node ./build/server.cjs",
+    "build": "rollup -c",
+    "serve": "cross-env NODE_ENV=production node ./build/bundle.cjs",
     "clean": "rm -rf node_modules"
   },
   "dependencies": {
@@ -30,6 +30,10 @@
     "socket.io": "^4.7.2"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-typescript": "^11.1.6",
     "@types/body-parser": "^1.19.5",
     "@types/cors": "^2.8.17",
     "@types/dotenv": "^8.2.0",
@@ -40,6 +44,8 @@
     "cross-env": "^7.0.3",
     "esm": "^3.2.25",
     "nodemon": "^3.0.2",
+    "rollup": "^4.13.0",
+    "rollup-plugin-auto-external": "^2.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }

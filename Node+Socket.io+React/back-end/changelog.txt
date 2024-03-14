@@ -21,3 +21,13 @@ patch:
 v3.4.5
 patch:
 - userJoined track fixed.
+
+v3.5.10
+minor:
+- Adds Rollup for the production build. Docker and fly config also added for hosting the server on fly.io.
+patch:
+- Circular dependency fix.
+- user vars/fields/keys replaced with username.
+- Leave message fix (supposed to be a object like the joined message).
+- Sockets chatService manageRoom method wasn't supposed to be getting the userList on leave fix.
+- Storing of the userList fix; every user wasn't seeing the same list because it was a instance of the class.

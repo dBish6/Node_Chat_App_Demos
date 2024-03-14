@@ -5,9 +5,8 @@
 import express from "express";
 
 import bodyParser from "body-parser";
-import { corsOptions } from "../server";
-import cors from "cors";
 
+import cors from "cors";
 import helmet from "helmet";
 import hpp from "hpp";
 import rateLimit from "express-rate-limit";
@@ -15,6 +14,11 @@ import morgan from "morgan";
 import errorHandler from "./middleware/errorHandler";
 
 import chatRouter from "./routes/chatRoute";
+
+export const corsOptions = {
+  origin: "http://localhost:3000",
+  credentials: true,
+};
 
 const initializeApi = async () => {
   const app = express(),

@@ -1,5 +1,5 @@
 /* Chat App Demo (back-end)
- * Version: 3.4.5
+ * Version: 3.5.10
  *
  * Author: David Bishop
  * Creation Date: December 10, 2023
@@ -23,17 +23,13 @@ import dotenv from "dotenv";
 
 import { createServer } from "http";
 import { Server } from "socket.io";
-import initializeApi from "./api";
+import initializeApi, { corsOptions } from "./api";
 
 import { connect } from "mongoose";
 
 import initializeSockets from "./sockets";
 
 dotenv.config();
-export const corsOptions = {
-  origin: "http://localhost:3000",
-  credentials: true,
-};
 
 const setupServer = async () => {
   const PORT = Number(process.env.HOST) || 4000;
@@ -49,7 +45,7 @@ const setupServer = async () => {
   await initializeSockets(io);
   console.log("Sockets initialized!");
 
-  httpServer.listen(PORT, "localhost", async () => {
+  httpServer.listen(PORT, process.env.HOST, async () => {
     try {
       await connect(process.env.MONGODB_URL || "");
       console.log(

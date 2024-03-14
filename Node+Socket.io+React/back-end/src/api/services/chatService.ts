@@ -24,7 +24,7 @@ export const getChats = async (roomId: RoomIds) => {
 
 export const storeMessage = async ({
   userId,
-  user,
+  username,
   msg,
   roomId,
 }: MessageDTO) => {
@@ -36,7 +36,7 @@ export const storeMessage = async ({
 
     const chat = new roomModel({
       _id: userId,
-      username: user,
+      username,
       message: msg,
     });
     await chat.save();

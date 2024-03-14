@@ -1,7 +1,7 @@
 import { RoomIds } from "../../typings/RoomIds";
 
 export interface SocketDTO {
-  user: string;
+  username: string;
   roomId: RoomIds;
 }
 

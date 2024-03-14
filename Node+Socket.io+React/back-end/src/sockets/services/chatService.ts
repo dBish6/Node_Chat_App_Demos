@@ -10,32 +10,34 @@ import { MessageDTO } from "../../dtos/MessageDto";
 
 import { storeMessage } from "../../api/services/chatService";
 
+// TODO: Use a better data structure.
 interface UsersJoined {
   userId: string;
-  user: string;
+  username: string;
   roomId: RoomIds;
 }
+let usersJoined: { alpha: UsersJoined[]; bravo: UsersJoined[] } = {
+  alpha: [],
+  bravo: [],
+};
 
 // TODO: Custom logger.
 class ChatService {
   private socket: Socket;
   private io: Namespace;
-  private usersJoined: { alpha: UsersJoined[]; bravo: UsersJoined[] };
 
   constructor(socket: Socket, io: Namespace) {
     this.socket = socket;
     this.io = io;
-    // TODO: Use a better data structure.
-    this.usersJoined = { alpha: [], bravo: [] };
   }
 
-  // Handles joins and leaves of chat rooms and the amount users in the room.
+  // Handles joins and leaves of chat rooms and sends the amount users in the room initially.
   manageRoom(data: JoinOrLeaveDTO, callback: SocketCallback) {
-    const { roomId, user, type } = data;
+    const { roomId, username, type } = data;
 
     if (!["join", "leave"].includes(type)) {
       throw Error(
-        "manage_room socket error:\n There was no data provide for a join or the type isn't valid; 'leave' or 'join'."
+        "manageRoom socket error:\n There was no data provide for a join or the type isn't valid; 'leave' or 'join'."
       );
     }
 
@@ -44,33 +46,35 @@ class ChatService {
         this.socket[type](roomId);
 
         const isType = type === "join" ? "joined" : "left";
-        console.log(`${user} ${isType} room ${roomId}.`);
+        console.log(`${username} ${isType} room ${roomId}.`);
 
         // This message is in an object to resemble how the chat messages look in the db, sort of, if you were wondering.
         this.io.in(roomId).emit("get_msg", {
-          message: `${user} has ${isType} the chat.`,
+          message: `${username} has ${isType} the chat.`,
         });
 
-        const userList = this.userList(data);
-        type === "join"
-          ? callback(null, {
-              userList,
-              message: { message: "You joined the chat." },
-            })
-          : callback(null, "You left the chat.");
+        if (type === "join") {
+          const userList = this.userList(data);
+          callback(null, {
+            userList,
+            message: { message: "You joined the chat." },
+          });
+        } else {
+          callback(null, { message: "You left the chat." });
+        }
       } else {
         callback("No room id was given in the request.");
       }
     } catch (error: any) {
-      console.error("manage_room socket error:\n", error.message);
+      console.error("manageRoom socket error:\n", error.message);
       callback(error.message);
     }
   }
   // Handles and emits the joined users list in each room (Joins doesn't happen from a emit).
   userList(data: JoinOrLeaveDTO, callback?: SocketCallback) {
-    const { userId, roomId, user, type } = data || {};
+    const { userId, roomId, username, type } = data || {};
     console.log(
-      `${user} is being ${
+      `${username} is being ${
         type === "join" ? "added" : "removed"
       } to the ${roomId} user list.`
     );
@@ -78,46 +82,45 @@ class ChatService {
     try {
       if (roomId) {
         if (type === "leave") {
-          this.usersJoined[roomId] = this.usersJoined[roomId].filter(
+          usersJoined[roomId] = usersJoined[roomId].filter(
             (user) => user.userId !== this.socket.id
           );
 
-          this.io.in(roomId).emit("user_list", this.usersJoined);
+          this.io.in(roomId).emit("user_list", usersJoined);
           callback!(
             null,
-            `${user} has been removed from the ${roomId} user list.`
+            `${username} has been removed from the ${roomId} user list.`
           );
         } else if (
           type === "join" &&
           data &&
-          !this.usersJoined[roomId].find((u) => u.userId === userId)
+          !usersJoined[roomId].find((user) => user.userId === userId)
         ) {
-          this.usersJoined[roomId].push({ userId, user, roomId });
+          usersJoined[roomId].push({ userId, username, roomId });
 
-          this.io.in(roomId).emit("user_list", this.usersJoined);
-          return this.usersJoined;
+          this.io.in(roomId).emit("user_list", usersJoined);
+          return usersJoined;
         }
-        // console.log("usersJoined", this.usersJoined);
       } else {
         callback!("No room id was given in the request.");
       }
     } catch (error: any) {
-      console.error("manage_room socket error:\n", error.message);
+      console.error("userList socket error:\n", error.message);
       if (callback) callback(error.message);
     }
   }
 
   // Handles if a user is typing in a chat room.
   typing(data: TypingDTO, callback: SocketCallback) {
-    const { user, roomId, isTyping } = data;
+    const { username, roomId, isTyping } = data;
     console.log("User typing", data);
 
     try {
-      if (!user) {
+      if (!username) {
         return callback("No user was given in the request.");
       }
 
-      this.socket.in(roomId).emit("user_typing", { user, isTyping });
+      this.socket.in(roomId).emit("user_typing", { username, isTyping });
       isTyping
         ? callback(null, "User typing emitted.")
         : callback(null, "User stopped typing.");
