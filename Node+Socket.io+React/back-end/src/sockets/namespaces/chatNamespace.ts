@@ -12,12 +12,6 @@ const chatNamespace = (socket: Socket, io: Namespace) => {
     service.manageRoom(data, callback)
   );
 
-  socket.on(
-    "update_user_list",
-    async (data: JoinOrLeaveDTO, callback: SocketCallback) =>
-      service.userList(data, callback)
-  );
-
   socket.on("typing", (data: TypingDTO, callback: SocketCallback) =>
     service.typing(data, callback)
   );
@@ -25,6 +19,8 @@ const chatNamespace = (socket: Socket, io: Namespace) => {
   socket.on("msg", async (data: MessageDTO, callback: SocketCallback) =>
     service.message(data, callback)
   );
+
+  socket.on("disconnect", () => service.disconnect());
 };
 
 export default chatNamespace;

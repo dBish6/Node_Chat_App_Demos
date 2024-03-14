@@ -1,5 +1,5 @@
 /* Chat App Demo (back-end)
- * Version: 3.5.10
+ * Version: 3.6.11
  *
  * Author: David Bishop
  * Creation Date: December 10, 2023
@@ -29,10 +29,12 @@ import { connect } from "mongoose";
 
 import initializeSockets from "./sockets";
 
-dotenv.config();
+dotenv.config(); // Loads the default .env.
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` }); // loads the environment specific .env if any.
 
 const setupServer = async () => {
-  const PORT = Number(process.env.HOST) || 4000;
+  const { PROTOCOL, HOST, PORT: ENV_PORT, MONGODB_URL } = process.env,
+    PORT = Number(ENV_PORT) || 4000;
 
   const app = await initializeApi();
   console.log("Api initialized!");
@@ -45,11 +47,11 @@ const setupServer = async () => {
   await initializeSockets(io);
   console.log("Sockets initialized!");
 
-  httpServer.listen(PORT, process.env.HOST, async () => {
+  httpServer.listen(PORT, HOST, async () => {
     try {
-      await connect(process.env.MONGODB_URL || "");
+      await connect(MONGODB_URL || "");
       console.log(
-        `Server is running on ${process.env.PROTOCOL}${process.env.HOST}:${PORT}; Ctrl-C to terminate...`
+        `Server is running on ${PROTOCOL}${HOST}:${PORT}; Ctrl-C to terminate...`
       );
     } catch (error: any) {
       console.error("Server start error:\n" + error.message);

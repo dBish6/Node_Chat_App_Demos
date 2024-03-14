@@ -9,14 +9,9 @@ const initializeSockets = async (io: Server) => {
   new Promise((resolve) => {
     // *Namespaces*
     io.of("/chat").on("connection", (socket) => {
-      const id = socket.id;
-      console.log(`User connected; ${id}.`);
+      console.log(`Socket connected; ${socket.id}.`);
 
       chatNamespace(socket, io.of("/chat"));
-
-      socket.on("disconnect", () => {
-        console.log(`User disconnected; ${id}.`);
-      });
     });
 
     resolve(io);

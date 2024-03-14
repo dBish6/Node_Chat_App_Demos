@@ -1,7 +1,7 @@
 .git
 node_modules
 .dockerignore
-example.env
+example.env*
 Dockerfile
 fly.toml
 build

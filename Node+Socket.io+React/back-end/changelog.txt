@@ -31,3 +31,11 @@ patch:
 - Leave message fix (supposed to be a object like the joined message).
 - Sockets chatService manageRoom method wasn't supposed to be getting the userList on leave fix.
 - Storing of the userList fix; every user wasn't seeing the same list because it was a instance of the class.
+
+v3.6.11
+minor:
+- this.current user has been added to the sockets ChatService class so we can remove the connected user from the room and userList on disconnect. And changes how the userList method is used, it 
+  doesn't run on a emit from the front-end anymore, just used solely in the server, so the update_user_list listener is removed.
+patch:
+- Fixed how the user could only send one message because of the error storing the message in the db; since I changed the _id to the userId, the documents had the same id, funny how I didn't notice.
+- .env variables fix for production environment.

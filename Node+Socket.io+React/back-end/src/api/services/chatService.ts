@@ -35,7 +35,7 @@ export const storeMessage = async ({
     );
 
     const chat = new roomModel({
-      _id: userId,
+      _id: `${userId}__${Math.random().toString(36).substring(2, 6)}`,
       username,
       message: msg,
     });
