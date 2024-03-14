@@ -1,7 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { socket } from "./socketConfig";
 import { SET_ROOM_ID, SET_USER_LIST, ADD_MESSAGE } from "../redux/chatSlice";
-import emitLeaveUserList from "./emitLeaveUserList";
 import history from "../utils/history";
 
 // Leave or join thunk.
@@ -48,11 +47,9 @@ const emitManageRoom = createAsyncThunk(
                 }
 
                 if (type === "leave") {
-                  // TODO: Should have a loading screen for this.
-                  dispatch(emitLeaveUserList()).then(() => {
-                    dispatch(SET_ROOM_ID(null));
-                    history.push("/home");
-                  });
+                  // TODO: Should have a loading screen for leave?
+                  dispatch(SET_ROOM_ID(null));
+                  history.push("/home");
                 }
               }
               resolve();

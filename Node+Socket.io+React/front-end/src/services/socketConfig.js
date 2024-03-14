@@ -1,6 +1,7 @@
 import { io } from "socket.io-client";
+import apiUrl from "../constants/apiUrl";
 
-export const socket = io("http://localhost:4000/chat");
+export const socket = io(`${apiUrl.split("/api")[0]}/chat`);
 
 const socketConfig = () => {
   const engine = socket.io.engine,
@@ -13,7 +14,6 @@ const socketConfig = () => {
     });
   });
   socket.on("connect", () => {
-    // TODO: Loading
     console.log(`Connection established; ${socket.id}`);
   });
 

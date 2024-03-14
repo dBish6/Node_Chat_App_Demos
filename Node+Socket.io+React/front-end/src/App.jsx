@@ -1,5 +1,5 @@
 /* Chat App Demo (front-end)
- * Version: 3.11.30
+ * Version: 3.11.34
  *
  * Author: David Bishop
  * Creation Date: December 10, 2023
@@ -31,7 +31,7 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import socketConfig, { socket } from "./services/socketConfig";
+import socketConfig from "./services/socketConfig";
 
 import history from "./utils/history";
 
@@ -50,8 +50,6 @@ function App() {
   useEffect(() => {
     // Establishes the connection to the chat socket.
     socketConfig();
-
-    return () => socket.disconnect();
   }, []);
 
   const Layout = () => {

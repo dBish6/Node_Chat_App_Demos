@@ -56,7 +56,7 @@ const OverlayLoader = ({ setLoading }) => {
         zIndex: 10,
       }}
     >
-      <Box>
+      <Box style={{ width: "100%", maxWidth: "320px", marginInline: "1rem" }}>
         <Text size="3" style={{ opacity: 0.95 }}>
           Loading...
         </Text>
@@ -65,7 +65,6 @@ const OverlayLoader = ({ setLoading }) => {
             overflow: "hidden",
             backgroundColor: "var(--accent-a5)",
             borderRadius: "6px",
-            width: "320px",
             height: "18px",
             marginTop: "4px",
             transform: "translateZ(0)",

@@ -67,3 +67,10 @@ minor:
 patch:
 - user vars/fields/keys replaced with username.
 - Leave message condition fix.
+
+v3.11.34
+patch:
+- The overlayLoader is now responsive.
+- emitLeaveUserList removed.
+- apiUrl changed for production.
+- The return () => socket.disconnect() on app unmount is now removed since web sockets do that by default.
