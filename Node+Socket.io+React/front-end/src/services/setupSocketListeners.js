@@ -26,9 +26,10 @@ const setupSocketListeners = (setUsersTyping) => {
   try {
     socket.on("user_typing", (data) => {
       data.isTyping
-        ? setUsersTyping((prev) => new Set([...prev, data.user]))
+        ? setUsersTyping((prev) => new Set([...prev, data.username]))
         : setUsersTyping(
-            (prev) => new Set([...prev].filter((user) => user !== data.user))
+            (prev) =>
+              new Set([...prev].filter((user) => user !== data.username))
           );
     });
   } catch (error) {

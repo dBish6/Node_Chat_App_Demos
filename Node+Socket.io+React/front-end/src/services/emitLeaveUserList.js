@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { socket } from "./socketConfig";
 
+// Thunk to remove the user from the joined user list.
 const emitLeaveUserList = createAsyncThunk(
   "chat/emitLeaveUserList",
   async (payload, thunkAPI) => {
@@ -11,7 +12,7 @@ const emitLeaveUserList = createAsyncThunk(
           {
             userId: socket.id,
             roomId: thunkAPI.getState().chat.roomId,
-            user: `User_${socket.id}`,
+            username: `User_${socket.id}`,
             type: "leave",
           },
           (error, res) => {

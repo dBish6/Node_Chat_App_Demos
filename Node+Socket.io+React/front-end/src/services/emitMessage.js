@@ -11,7 +11,7 @@ const emitMessage = createAsyncThunk(
           "msg",
           {
             userId: socket.id,
-            user: `User_${socket.id}`,
+            username: `User_${socket.id}`,
             msg,
             roomId: thunkAPI.getState().chat.roomId,
           },

@@ -60,3 +60,10 @@ patch:
 v3.10.28
 patch:
 - Max reties added to the overlay loader.
+
+v3.11.30
+minor:
+- The app is now responsive.
+patch:
+- user vars/fields/keys replaced with username.
+- Leave message condition fix.

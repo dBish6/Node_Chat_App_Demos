@@ -1,6 +1,6 @@
 import { Flex, Box, Text } from "@radix-ui/themes";
 import * as Progress from "@radix-ui/react-progress";
-import { useState, useEffect } from "react";
+import { useState, useLayoutEffect } from "react";
 
 import { delay } from "async-delay-callback";
 import history from "../../utils/history";
@@ -13,7 +13,7 @@ const OverlayLoader = ({ setLoading }) => {
   const loadingComplete = () =>
     delay(ANIMATION_DURATION, () => setLoading(false));
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     (async () => {
       let checkConnectionInterval;
       await delay(1000, () => setProgress(60));

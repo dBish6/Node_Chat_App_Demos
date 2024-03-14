@@ -4,16 +4,18 @@ import { selectUserList } from "../redux/chatSelectors";
 
 import { Spinner } from "./loaders";
 
-const JoinedUsers = () => {
+const JoinedUsers = ({ isSmallerThen689 }) => {
   const userList = useSelector(selectUserList);
 
   return (
     <Flex
       direction="column"
       style={{
-        width: "171px",
+        width: isSmallerThen689 ? "100%" : "171px",
         backgroundColor: "var(--gray-a2)",
-        padding: "0.5rem 0.5rem 0.75rem 0.75rem",
+        padding: isSmallerThen689
+          ? "0.5rem 0.75rem 0.75rem"
+          : "0.5rem 0.5rem 0.75rem 0.75rem",
         borderRadius: "var(--radius-3)",
       }}
     >
@@ -22,28 +24,31 @@ const JoinedUsers = () => {
       </Heading>
 
       <ScrollArea scrollbars="vertical">
-        {userList.length ? (
-          userList.map((data) => (
-            <Text
-              key={data.user}
-              as="div"
-              size="2"
-              color="gray"
-              mb="3"
-              style={{
-                maxWidth: "151px",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-                overflow: "hidden",
-                verticalAlign: "middle",
-              }}
-            >
-              {data.user}
-            </Text>
-          ))
-        ) : (
-          <Spinner />
-        )}
+        <Flex wrap="wrap" gap="3">
+          {userList.length ? (
+            userList.map((data) => (
+              <Text
+                key={data.userId}
+                size="2"
+                color="gray"
+                {...(isSmallerThen689 && { mr: "2" })}
+                style={{
+                  maxWidth: isSmallerThen689 ? "200px" : "151px",
+                  whiteSpace: "nowrap",
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  verticalAlign: "middle",
+                }}
+              >
+                {data.username}
+              </Text>
+            ))
+          ) : (
+            <Spinner
+              style={{ width: "1.5rem", height: "1.5rem", borderWidth: "3px" }}
+            />
+          )}
+        </Flex>
       </ScrollArea>
     </Flex>
   );

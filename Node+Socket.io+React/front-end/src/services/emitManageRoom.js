@@ -4,6 +4,7 @@ import { SET_ROOM_ID, SET_USER_LIST, ADD_MESSAGE } from "../redux/chatSlice";
 import emitLeaveUserList from "./emitLeaveUserList";
 import history from "../utils/history";
 
+// Leave or join thunk.
 const emitManageRoom = createAsyncThunk(
   "chat/emitManageRoom",
   async (payload, thunkAPI) => {
@@ -21,7 +22,7 @@ const emitManageRoom = createAsyncThunk(
           {
             userId: socket.id,
             roomId,
-            user: `User_${socket.id}`,
+            username: `User_${socket.id}`,
             type,
           },
           (error, res) => {

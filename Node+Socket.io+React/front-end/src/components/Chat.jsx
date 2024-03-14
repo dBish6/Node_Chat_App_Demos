@@ -27,7 +27,7 @@ import { handleLeaveRoom } from "../utils/roomHandlers";
 
 import { Spinner } from "./loaders";
 
-const Chat = () => {
+const Chat = ({ isSmallerThen689 }) => {
   const scrollAreaRef = useRef(null),
     avatarCacheRef = useRef({});
 
@@ -52,8 +52,8 @@ const Chat = () => {
   useEffect(() => {
     if (messages.length > 1) {
       setLoading({ value: true, error: false });
-      messages.forEach((msg) => {
-        const userId = msg.username;
+      messages.forEach((data) => {
+        const userId = data.username;
         const cachedSrc = avatarCacheRef.current[userId];
 
         if (!cachedSrc && userId) {
@@ -90,9 +90,9 @@ const Chat = () => {
   return (
     <Flex
       direction="column"
+      grow="1"
       style={{
-        maxWidth: "532px",
-        height: "calc(100% - 52px)",
+        height: isSmallerThen689 ? "600px" : "calc(100% - 52px)",
         backgroundColor: "var(--gray-a2)",
         paddingInline: "0.75rem",
         borderRadius: "var(--radius-3)",
@@ -109,9 +109,10 @@ const Chat = () => {
         {!loading.value ? (
           messages.length > 1 ? (
             // prettier-ignore
-            messages.slice().reverse().map((msg, i) => (
+            messages.slice().reverse().map((data, i) => (
                 <Fragment key={i}>
-                  {!msg.username && msg.message.includes("joined") ? (
+                  {!data.username && (data.message.includes("joined") ||
+                   data.message.includes("left")) ? (
                     <Text
                       id="joinMsg"
                       as="div"
@@ -121,7 +122,7 @@ const Chat = () => {
                       mb="3"
                       style={{ opacity: "0.5", wordWrap: "break-word" }}
                     >
-                      &gt; {msg.message}
+                      &gt; {data.message}
                     </Text>
                   ) : (
                     // Message Box
@@ -133,17 +134,17 @@ const Chat = () => {
                         style={{ marginBottom: 6 }}
                       >
                         <Avatar
-                          src={avatarCacheRef.current[msg.username]}
+                          src={avatarCacheRef.current[data.username]}
                           fallback={<PersonIcon />}
                           size="2"
                           radius="full"
                         />
-                        <Flex justify="between" grow="1">
+                        <Flex justify="between" grow="1" wrap="wrap" style={{gap: "0px 12px"}}>
                           <Text size="2" color="gray">
-                            {msg.username}
+                            {data.username}
                           </Text>
                           <Text size="1" color="gray" style={{ opacity: "0.45" }}>
-                            {`${msg.timestamp.slice(5, 10)} ${msg.timestamp.slice(
+                            {`${data.timestamp.slice(5, 10)} ${data.timestamp.slice(
                               11,
                               16
                             )}`}
@@ -160,7 +161,7 @@ const Chat = () => {
                           overflowWrap: "break-word",
                         }}
                       >
-                        {msg.message}
+                        {data.message}
                       </Text>
                     </Box>
                   )}
@@ -199,7 +200,7 @@ const Chat = () => {
               overflow: "hidden",
             }}
           >
-            {Array.from(usersTyping).map((user, i) => (
+            {Array.from(usersTyping).map((username, i) => (
               <Text
                 key={i}
                 align="center"
@@ -221,7 +222,7 @@ const Chat = () => {
                     verticalAlign: "middle",
                   }}
                 >
-                  {user}
+                  {username}
                 </Text>{" "}
                 is typing...
               </Text>

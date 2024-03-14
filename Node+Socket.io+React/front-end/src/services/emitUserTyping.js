@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { socket } from "./socketConfig";
 
-// Thunk to send a message.
+// Thunk to notify that the user typing.
 const emitUserTyping = createAsyncThunk(
   "chat/emitUserTyping",
   async (text, thunkAPI) => {
@@ -10,7 +10,7 @@ const emitUserTyping = createAsyncThunk(
         socket.emit(
           "typing",
           {
-            user: `User_${socket.id}`,
+            username: `User_${socket.id}`,
             roomId: thunkAPI.getState().chat.roomId,
             isTyping: text.length ? true : false,
           },
