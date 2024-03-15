@@ -24,9 +24,9 @@ primary_region = "yul"
     soft_limit = 30
 
 [[http_service.checks]]
-    interval = "32s"
-    timeout = "10s"
     grace_period = "15s"
+    interval = "24h0m0s"
+    timeout = "10s"
     method = "GET"
     path = "/"
 
