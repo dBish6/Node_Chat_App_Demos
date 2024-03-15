@@ -51,7 +51,7 @@ const OverlayLoader = ({ setLoading }) => {
         position: "fixed",
         width: "100vw",
         minHeight: "100vh",
-        backgroundColor: "rgba(26, 26, 26, 0.8)",
+        backgroundColor: "rgba(16, 18, 17, 0.8)",
         backdropFilter: "blur(40px)",
         zIndex: 10,
       }}

@@ -1,5 +1,5 @@
 /* Chat App Demo (front-end)
- * Version: 3.11.34
+ * Version: 3.11.36
  *
  * Author: David Bishop
  * Creation Date: December 10, 2023

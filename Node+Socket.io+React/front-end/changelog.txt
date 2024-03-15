@@ -74,3 +74,8 @@ patch:
 - emitLeaveUserList removed.
 - apiUrl changed for production.
 - The return () => socket.disconnect() on app unmount is now removed since web sockets do that by default.
+
+v3.11.36
+patch:
+- Proper path manipulation for github pages in the html files and adds a 404.html.
+- favicon images added.

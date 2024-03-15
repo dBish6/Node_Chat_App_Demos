@@ -2,12 +2,51 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#101211" />
+    <meta name="author" content="David Bishop" />
+    <meta name="application-name" content="Socket.io Chat App Demo" />
+    <meta
+      name="description"
+      content="A demo of a real-time chat room app, ideal to use as a starter for your own projects and would be used for my later apps."
+    />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
     <title>Chat App Demo</title>
   </head>
+
   <body class="dark">
     <div id="root"></div>
     <script type="module" src="/src/index.jsx"></script>
   </body>
+  <script>
+    // https://github.com/rafgraph/spa-github-pages
+    // This script checks to see if a redirect is present in the query string,
+    // converts it back into the correct url and adds it to the
+    // browser's history using window.history.replaceState(...),
+    // which won't cause the browser to attempt to load the new url.
+    // When the single page app is loaded further down in this file,
+    // the correct url will be waiting in the browser's history for
+    // the single page app to route accordingly.
+    ((l) => {
+      if (l.search[1] === "/") {
+        var decoded = l.search
+          .slice(1)
+          .split("&")
+          .map((s) => {
+            return s.replace(/~and~/g, "&");
+          })
+          .join("?");
+        window.history.replaceState(
+          null,
+          null,
+          l.pathname.slice(0, -1) + decoded + l.hash
+        );
+      }
+    })(window.location);
+  </script>
 </html>
