@@ -9,13 +9,12 @@
  * This application is a demo chat app that allows users to exchange messages in real-time.
  *
  * Features:
- *  - Real-time messaging using Socket.io.
+ *  - Real-time messaging using socket.io-client.
  *  - Randomized user names and avatar images, since this is a demo.
  *  - User typing indicators.
  *  - Joinable chat rooms.
- *  - Persistent message storage in MongoDB.
  *  - Redux for state management.
- *  - redux-thunk for api calls.
+ *  - redux-thunk and axios for api calls.
  *
  * Change Log:
  * The log is in the changelog.txt file at the base of this front-end directory.
