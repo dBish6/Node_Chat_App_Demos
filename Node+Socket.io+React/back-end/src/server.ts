@@ -12,8 +12,10 @@
  *  - Real-time messaging using Socket.io.
  *  - User typing indicators.
  *  - Joinable chat rooms.
- *  - Persistent message storage in MongoDB.
- *  - Redux for state management.
+ *  - Join and leave messages.
+ *  - List of users currently joined in a room.
+ *  - Persistent message storage in MongoDB. 
+ *  ...
  *
  * Change Log:
  * The log is in the changelog.txt file at the base of this back-end directory.
