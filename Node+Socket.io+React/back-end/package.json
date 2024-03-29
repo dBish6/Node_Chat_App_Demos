@@ -1,6 +1,6 @@
 {
   "name": "back-end",
-  "version": "3.6.11",
+  "version": "3.6.14",
   "author": "David Bishop",
   "description": "Demo Node server for a chat app.",
   "repository": {

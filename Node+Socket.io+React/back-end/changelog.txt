@@ -39,3 +39,9 @@ minor:
 patch:
 - Fixed how the user could only send one message because of the error storing the message in the db; since I changed the _id to the userId, the documents had the same id, funny how I didn't notice.
 - .env variables fix for production environment.
+
+v3.6.14
+patch:
+- The SocketUser type is change to UserDTO.
+- The leave and join messages now doesn't send to the sender because of front-end changes.
+- The usersJoined room object keys are now a Map instead of a array + refactor of the userList method.

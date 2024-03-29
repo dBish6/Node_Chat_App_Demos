@@ -1,6 +1,6 @@
-import { SocketDTO } from "../sockets/dtos/Room";
+import { UserDTO } from "../sockets/dtos/Room";
 
-export interface MessageDTO extends SocketDTO {
+export interface MessageDTO extends UserDTO {
   userId: string;
   msg: string;
 }

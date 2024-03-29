@@ -3,22 +3,20 @@
  */
 
 import { Socket, Namespace } from "socket.io";
-import { RoomIds } from "../../typings/RoomIds";
+
 import { SocketCallback } from "../typings/SocketCallback";
-import { JoinOrLeaveDTO, TypingDTO } from "../dtos/Room";
+import { UserDTO, JoinOrLeaveDTO, TypingDTO } from "../dtos/Room";
 import { MessageDTO } from "../../dtos/MessageDto";
 
 import { storeMessage } from "../../api/services/chatService";
 
-// TODO: Use a better data structure.
-interface SocketUser {
-  userId: string;
-  username: string;
-  roomId: RoomIds;
+interface userList {
+  alpha: Map<string, UserDTO>;
+  bravo: Map<string, UserDTO>;
 }
-let usersJoined: { alpha: SocketUser[]; bravo: SocketUser[] } = {
-  alpha: [],
-  bravo: [],
+let usersJoined: userList = {
+  alpha: new Map(),
+  bravo: new Map(),
 };
 
 // TODO: Custom logger.
@@ -26,7 +24,7 @@ let usersJoined: { alpha: SocketUser[]; bravo: SocketUser[] } = {
 class ChatService {
   private socket: Socket;
   private io: Namespace;
-  private currentUser: SocketUser | null;
+  private currentUser: UserDTO | null;
 
   constructor(socket: Socket, io: Namespace) {
     this.socket = socket;
@@ -52,7 +50,7 @@ class ChatService {
         console.log(`${username} ${isType} room ${roomId}.`);
 
         // This message is in an object to resemble how the chat messages look in the db, sort of, if you were wondering.
-        this.io.in(roomId).emit("get_msg", {
+        this.socket.in(roomId).emit("get_msg", {
           message: `${username} has ${isType} the chat.`,
         });
 
@@ -60,7 +58,10 @@ class ChatService {
         callback(
           null,
           type === "join"
-            ? { userList, message: { message: "You joined the chat." } }
+            ? {
+                userList: ChatService.convertUserList(userList),
+                message: { message: "You joined the chat." },
+              }
             : "You left the chat."
         );
       } else {
@@ -81,33 +82,24 @@ class ChatService {
     );
 
     try {
-      if (roomId) {
-        if (type === "leave") {
-          usersJoined[roomId] = usersJoined[roomId].filter(
-            (user) => user.userId !== this.socket.id
-          );
-          this.currentUser = null;
+      const roomUsers = usersJoined[roomId];
 
-          this.io.in(roomId).emit("user_list", usersJoined);
-        } else if (
-          type === "join" &&
-          data &&
-          !usersJoined[roomId].find((user) => user.userId === userId)
-        ) {
-          const user = { userId, username, roomId };
-          this.currentUser = user;
-          usersJoined[roomId].push(user);
+      if (type === "leave") {
+        roomUsers.delete(userId);
+        this.currentUser = null;
+      } else if (type === "join" && data && !roomUsers.has(userId)) {
+        const user = { userId, username, roomId };
 
-          this.io.in(roomId).emit("user_list", usersJoined);
-        }
-        return usersJoined;
-      } else {
-        throw Error(
-          "manageRoom socket error:\n No room id was given in the request."
-        );
+        roomUsers.set(userId, user);
+        this.currentUser = user;
       }
+      this.io
+        .in(roomId)
+        .emit("user_list", ChatService.convertUserList(usersJoined));
+
+      return usersJoined;
     } catch (error: any) {
-      throw Error("manageRoom service error:\n" + error.message);
+      throw Error(error.message);
     }
   }
 
@@ -155,6 +147,14 @@ class ChatService {
         console.error("disconnect service error:\n", error.message);
       }
     }
+  }
+
+  // Since you can't send Maps in a json response, we have to convert it to something that can.
+  static convertUserList(userList: typeof usersJoined) {
+    return {
+      alpha: Array.from(userList.alpha.values()),
+      bravo: Array.from(userList.bravo.values()),
+    };
   }
 }
 
