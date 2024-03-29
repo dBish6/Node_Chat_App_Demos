@@ -1,25 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import apiUrl from "../constants/apiUrl";
-import history from "../utils/history";
 import { SET_MESSAGES } from "../redux/chatSlice";
 
 const getInitialMessages = createAsyncThunk(
-  "chat/getInitialMessages",
-  async (setLoading, thunkAPI) => {
-    // console.log(
-    //   "thunkAPI.getState().chat.roomId",
-    //   thunkAPI.getState().chat.roomId
-    // );
-    // TODO:
-    if (!thunkAPI.getState().chat.roomId) {
-      history.push("/home");
-      alert(
-        "The roomId wasn't set, probably because you refreshed the page. I am working on persisting the roomId."
-      );
-      window.location.reload();
-    }
-
+  "chat/getInitialChatData",
+  async (payload, thunkAPI) => {
     try {
       const res = await axios({
         method: "GET",
@@ -38,8 +24,6 @@ const getInitialMessages = createAsyncThunk(
       return res;
     } catch (error) {
       console.error("getInitialMessages error:", error.message);
-    } finally {
-      setLoading({ value: false, error: false });
     }
   }
 );

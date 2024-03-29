@@ -1,9 +1,9 @@
 /* Chat App Demo (front-end)
- * Version: 3.11.36
+ * Version: 3.11.42
  *
  * Author: David Bishop
  * Creation Date: December 10, 2023
- * Last Updated: March 10, 2024
+ * Last Updated: March 28, 2024
  *
  * Description:
  * This application is a demo chat app that allows users to exchange messages in real-time.
@@ -44,28 +44,31 @@ import { Error404, Error500 } from "./pages/errors";
 import "@radix-ui/themes/styles.css";
 
 function App() {
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Establishes the connection to the chat socket.
-    socketConfig();
-  }, []);
-
   const Layout = () => {
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+      // Establishes the connection to the chat socket.
+      socketConfig();
+    }, []);
+
     // This just sets useNavigate to my custom history object so I can use useNavigate outside
     // of react components.
     history.navigate = useNavigate();
 
     return (
       <>
-        {loading && <OverlayLoader setLoading={setLoading} />}
-        <div role="presentation" className="grid">
-          <Header />
-          <main>
-            <Outlet />
-          </main>
-          <Footer />
-        </div>
+        {loading ? (
+          <OverlayLoader setLoading={setLoading} />
+        ) : (
+          <div role="presentation" className="grid">
+            <Header />
+            <main>
+              <Outlet />
+            </main>
+            <Footer />
+          </div>
+        )}
       </>
     );
   };

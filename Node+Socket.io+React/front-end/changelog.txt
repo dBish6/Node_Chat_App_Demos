@@ -79,3 +79,12 @@ v3.11.36
 patch:
 - Proper path manipulation for github pages in the html files and adds a 404.html.
 - favicon images added.
+
+v3.11.42
+patch:
+- The leave room message now shows on page leave; refresh, etc.
+- RoomHandlers.js is not needed anymore and deleted.
+- The roomId is now persisted in sessionStorage and other corresponding changes.
+- At the Home page, the room buttons doesn't emit the join in emitManageRoom anymore because you can refresh the chat now, emitManageRoom is onLoad.
+- The loading state for the chat is better; now actually waits for the 'setup' using Promise.all and then the loading is 'complete' when random avatars are added to the initial users.
+- The OverlayLoader isn't really a overlay loader anymore because since we can refresh the chat now, socket.io isn't connected when refreshed. So, it now renders the loader and then renders the content after.

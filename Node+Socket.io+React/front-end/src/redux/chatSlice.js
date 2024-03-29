@@ -1,14 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
+
 import emitManageRoom from "../services/emitManageRoom";
 import getInitialMessages from "../services/getInitialMessages";
 import emitMessage from "../services/emitMessage";
 import emitUserTyping from "../services/emitUserTyping";
+
 import history from "../utils/history";
 
 export const chatSlice = createSlice({
   name: "chat",
   initialState: {
-    roomId: null,
+    roomId: sessionStorage.getItem("roomId"),
     userList: { alpha: [], bravo: [] },
     messages: { alpha: [], bravo: [] },
   },
@@ -26,37 +28,41 @@ export const chatSlice = createSlice({
       ];
     },
     ADD_MESSAGE: (state, action) => {
+      // FIXME: unshift is bad.
       state.messages[state.roomId].unshift(action.payload);
+    },
+    CLEAR_MESSAGES: (state) => {
+      state.messages = { alpha: [], bravo: [] };
     },
   },
   // TODO: Only log in production.
   extraReducers: (builder) => {
     builder
-      .addCase(emitManageRoom.pending, (state) => {
+      .addCase(emitManageRoom.pending, () => {
         console.log("Joining or leaving room...");
       })
       .addCase(emitManageRoom.fulfilled, (state) => {
         console.log(`Room ${state.roomId} joined or left successfully!`);
       })
 
-      .addCase(getInitialMessages.pending, (state) => {
+      .addCase(getInitialMessages.pending, () => {
         console.log("Getting messages...");
       })
-      .addCase(getInitialMessages.fulfilled, (state) => {
+      .addCase(getInitialMessages.fulfilled, () => {
         console.log("Messages received!");
       })
 
-      .addCase(emitMessage.pending, (state) => {
+      .addCase(emitMessage.pending, () => {
         console.log("Emitted message pending...");
       })
-      .addCase(emitMessage.fulfilled, (state) => {
+      .addCase(emitMessage.fulfilled, () => {
         console.log("Emitted message fulfilled!");
       })
 
-      .addCase(emitUserTyping.pending, (state) => {
+      .addCase(emitUserTyping.pending, () => {
         console.log("Emitting typing...");
       })
-      .addCase(emitUserTyping.fulfilled, (state) => {
+      .addCase(emitUserTyping.fulfilled, () => {
         console.log("Emitting typing fulfilled!");
       })
 
@@ -75,7 +81,12 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { SET_ROOM_ID, SET_USER_LIST, SET_MESSAGES, ADD_MESSAGE } =
-  chatSlice.actions;
+export const {
+  SET_ROOM_ID,
+  SET_USER_LIST,
+  SET_MESSAGES,
+  ADD_MESSAGE,
+  CLEAR_MESSAGES,
+} = chatSlice.actions;
 
 export default chatSlice.reducer;

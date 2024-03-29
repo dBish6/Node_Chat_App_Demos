@@ -16,14 +16,16 @@ import { delay } from "async-delay-callback";
 import debounce from "lodash.debounce";
 
 import { socket } from "../services/socketConfig";
+import emitManageRoom from "../services/emitManageRoom";
 import getInitialMessages from "../services/getInitialMessages";
 import setupSocketListeners from "../services/setupSocketListeners";
 import emitUserTyping from "../services/emitUserTyping";
 
-import { selectMessages } from "../redux/chatSelectors";
+import { selectRoomId, selectMessages } from "../redux/chatSelectors";
+import { CLEAR_MESSAGES } from "../redux/chatSlice";
 
+import history from "../utils/history";
 import handleSubmitMessage from "../utils/handleSubmitMessage";
-import { handleLeaveRoom } from "../utils/roomHandlers";
 
 import { Spinner } from "./loaders";
 
@@ -31,31 +33,57 @@ const Chat = ({ isSmallerThen689 }) => {
   const scrollAreaRef = useRef(null),
     avatarCacheRef = useRef({});
 
-  const [loading, setLoading] = useState({ value: true, error: false }),
+  const [loading, setLoading] = useState({
+      setup: true,
+      complete: false,
+      error: false,
+    }),
     [usersTyping, setUsersTyping] = useState(new Set([]));
 
   const dispatch = useDispatch(),
+    roomId = useSelector(selectRoomId),
     messages = useSelector(selectMessages);
-
-  useEffect(() => {
-    // Gets messages from the db, if any.
-    dispatch(getInitialMessages(setLoading));
-    // All chat listeners.
-    setupSocketListeners(setUsersTyping);
-
-    return () => socket.removeAllListeners();
-  }, []);
 
   const onChange = (e) =>
     dispatch(debounce(emitUserTyping(e.target.value), 1400));
 
+  const handleLeaveRoom = () =>
+    dispatch(
+      emitManageRoom({
+        type: "leave",
+        roomId: roomId,
+      })
+    );
+
   useEffect(() => {
-    if (messages.length > 1) {
-      setLoading({ value: true, error: false });
+    if (!roomId) {
+      history.navigate("/home");
+    } else {
+      const manageRoom = dispatch(
+          emitManageRoom({ type: "join", roomId: roomId }) // Joins the room.
+        ),
+        initialMessages = dispatch(getInitialMessages()); // Gets the messages from the db, if any.
+      Promise.all([manageRoom, initialMessages]).then(() =>
+        setLoading({ setup: false, complete: false, error: false })
+      );
+      // All chat listeners.
+      setupSocketListeners(setUsersTyping);
+      // Listens for app leave to show leave message; refresh, exit, etc.
+      window.addEventListener("beforeunload", handleLeaveRoom);
+
+      return () => {
+        window.removeEventListener("beforeunload", handleLeaveRoom);
+        socket.removeAllListeners();
+        dispatch(CLEAR_MESSAGES());
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!loading.setup && messages.length > 1) {
       messages.forEach((data) => {
         const userId = data.username;
         const cachedSrc = avatarCacheRef.current[userId];
-
         if (!cachedSrc && userId) {
           const newSrc = `https://avatar.iran.liara.run/public/${Math.floor(
             Math.random() * 100
@@ -63,21 +91,22 @@ const Chat = ({ isSmallerThen689 }) => {
           avatarCacheRef.current[userId] = newSrc;
         }
       });
-      setLoading({ value: false, error: false });
-      console.log("avatarCacheRef.current", avatarCacheRef.current);
+      setLoading((prev) => ({ ...prev, complete: true }));
     }
-  }, [messages]);
+  }, [loading.setup, messages]);
   useEffect(() => {
-    // If the sever takes too long to give us the message.
+    // If the server takes too long to give us the messages.
     delay(
       40000,
-      () => loading.value && setLoading({ value: false, error: true })
+      () =>
+        !loading.complete &&
+        setLoading((prev) => ({ ...prev, complete: true, error: true }))
     );
   }, []);
 
   useEffect(() => {
-    if (!loading.value) {
-      // Keeps the scroll of the ScrollArea at the bottom.
+    if (loading.complete) {
+      // Keeps the scroll of the ScrollArea at the bottom onload.
       const scrollAreaInner = document.querySelector(
         ".chatScroll .rt-ScrollAreaViewport"
       );
@@ -85,7 +114,7 @@ const Chat = ({ isSmallerThen689 }) => {
       if (scrollAreaInner)
         scrollAreaInner.scrollTop = scrollAreaInner.scrollHeight;
     }
-  }, [loading.value]);
+  }, [loading.complete]);
 
   return (
     <Flex
@@ -106,7 +135,7 @@ const Chat = ({ isSmallerThen689 }) => {
         grow="1"
         style={{ position: "relative", marginBlock: "0.5rem 2rem" }}
       >
-        {!loading.value ? (
+        {loading.complete ? (
           messages.length > 1 ? (
             // prettier-ignore
             messages.slice().reverse().map((data, i) => (

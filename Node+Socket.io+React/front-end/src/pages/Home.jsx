@@ -1,9 +1,23 @@
 import { Card, Heading, Text, Flex, Button } from "@radix-ui/themes";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
 
-import { handleJoinRoom } from "../utils/roomHandlers";
+import { useDispatch } from "react-redux";
+import { SET_ROOM_ID } from "../redux/chatSlice";
+
+import history from "../utils/history";
 
 const Home = () => {
+  const dispatch = useDispatch();
+
+  const handleTransition = async (e) => {
+    const roomId = e.target.innerText.toLowerCase();
+
+    dispatch(SET_ROOM_ID(e.target.innerText.toLowerCase()));
+    sessionStorage.setItem("roomId", roomId);
+
+    history.push(`/rooms/${roomId}`);
+  };
+
   return (
     <Card
       style={{
@@ -30,7 +44,7 @@ const Home = () => {
           variant="soft"
           size="3"
           mr="4"
-          onClick={(e) => handleJoinRoom(e.target.innerText.toLowerCase())}
+          onClick={(e) => handleTransition(e)}
           style={{ flexGrow: 1 }}
         >
           Alpha <ArrowRightIcon width="18" height="18" />
@@ -38,7 +52,7 @@ const Home = () => {
         <Button
           variant="soft"
           size="3"
-          onClick={(e) => handleJoinRoom(e.target.innerText.toLowerCase())}
+          onClick={(e) => handleTransition(e)}
           style={{ flexGrow: 1 }}
         >
           Bravo <ArrowRightIcon width="18" height="18" />

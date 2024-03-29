@@ -22,7 +22,7 @@ const setupSocketListeners = (setUsersTyping) => {
     console.error("get_msg listener error:\n", error.message);
   }
 
-  // Listens for users that are typing.
+  // FIXME: Breaks sometimes. Listens for users that are typing.
   try {
     socket.on("user_typing", (data) => {
       data.isTyping
