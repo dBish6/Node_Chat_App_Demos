@@ -88,3 +88,7 @@ patch:
 - At the Home page, the room buttons doesn't emit the join in emitManageRoom anymore because you can refresh the chat now, emitManageRoom is onLoad.
 - The loading state for the chat is better; now actually waits for the 'setup' using Promise.all and then the loading is 'complete' when random avatars are added to the initial users.
 - The OverlayLoader isn't really a overlay loader anymore because since we can refresh the chat now, socket.io isn't connected when refreshed. So, it now renders the loader and then renders the content after.
+
+v3.11.43
+patch:
+- Empty chat room message fix because of the loading changes.

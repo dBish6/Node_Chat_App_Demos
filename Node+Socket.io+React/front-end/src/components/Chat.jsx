@@ -80,17 +80,18 @@ const Chat = ({ isSmallerThen689 }) => {
   }, []);
 
   useEffect(() => {
-    if (!loading.setup && messages.length > 1) {
-      messages.forEach((data) => {
-        const userId = data.username;
-        const cachedSrc = avatarCacheRef.current[userId];
-        if (!cachedSrc && userId) {
-          const newSrc = `https://avatar.iran.liara.run/public/${Math.floor(
-            Math.random() * 100
-          )}`;
-          avatarCacheRef.current[userId] = newSrc;
-        }
-      });
+    if (!loading.setup) {
+      messages.length > 1 &&
+        messages.forEach((data) => {
+          const userId = data.username;
+          const cachedSrc = avatarCacheRef.current[userId];
+          if (!cachedSrc && userId) {
+            const newSrc = `https://avatar.iran.liara.run/public/${Math.floor(
+              Math.random() * 100
+            )}`;
+            avatarCacheRef.current[userId] = newSrc;
+          }
+        });
       setLoading((prev) => ({ ...prev, complete: true }));
     }
   }, [loading.setup, messages]);
