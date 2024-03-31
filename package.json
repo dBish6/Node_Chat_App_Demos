@@ -18,6 +18,7 @@
     "build:socket.io-front": "npm run build --workspace front-end",
     "build:socket.io-back": "npm run build --workspace back-end",
     "serve:socket.io-back": "npm run serve --workspace back-end",
+    "deploy:back": "npm run deploy --workspace back-end",
     "clean": "npm run clean --workspace front-end --workspace back-end"
   }
 }
