@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Schema, model } from "mongoose";
 
 export const ChatAlphaSchema = new Schema(
   {
@@ -9,7 +9,6 @@ export const ChatAlphaSchema = new Schema(
   },
   { collection: "chat_alpha" }
 );
-// export const ChatAlpha = model("chat_alpha", ChatAlphaSchema);
 
 export const ChatBravoSchema = new Schema(
   {
@@ -20,4 +19,8 @@ export const ChatBravoSchema = new Schema(
   },
   { collection: "chat_bravo" }
 );
-// export const ChatBravo = model("chat_bravo", ChatBravoSchema);
+
+export const roomModals = {
+  alpha: model("chat_alpha", ChatAlphaSchema),
+  bravo: model("chat_bravo", ChatBravoSchema),
+};

@@ -5,16 +5,12 @@
 import { RoomIds } from "../../typings/RoomIds";
 import { MessageDTO } from "../../dtos/MessageDto";
 
-import { model } from "mongoose";
-import { ChatAlphaSchema, ChatBravoSchema } from "../../model/Chat";
+import { roomModals } from "../../model/Chat";
 import CustomError from "../utils/CustomError";
 
 export const getChats = async (roomId: RoomIds) => {
   try {
-    const roomModel = model(
-      "",
-      roomId === "alpha" ? ChatAlphaSchema : ChatBravoSchema
-    );
+    const roomModel = roomModals[roomId];
 
     return roomModel.find().sort({ timestamp: -1 }).limit(32);
   } catch (error: any) {
@@ -29,10 +25,7 @@ export const storeMessage = async ({
   roomId,
 }: MessageDTO) => {
   try {
-    const roomModel = model(
-      "",
-      roomId === "alpha" ? ChatAlphaSchema : ChatBravoSchema
-    );
+    const roomModel = roomModals[roomId];
 
     const chat = new roomModel({
       _id: `${userId}__${Math.random().toString(36).substring(2, 6)}`,

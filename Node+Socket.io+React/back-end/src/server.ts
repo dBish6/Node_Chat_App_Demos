@@ -1,9 +1,9 @@
 /* Chat App Demo (back-end)
- * Version: 3.6.14
+ * Version: 3.6.15
  *
  * Author: David Bishop
  * Creation Date: December 10, 2023
- * Last Updated: March 28, 2024
+ * Last Updated: March 31, 2024
  *
  * Description:
  * This application is a demo chat app that allows users to exchange messages in real-time.

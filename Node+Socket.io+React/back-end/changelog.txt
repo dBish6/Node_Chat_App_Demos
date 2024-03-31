@@ -45,3 +45,7 @@ patch:
 - The SocketUser type is change to UserDTO.
 - The leave and join messages now doesn't send to the sender because of front-end changes.
 - The usersJoined room object keys are now a Map instead of a array + refactor of the userList method.
+
+v3.6.15
+patch:
+- Added a better way to use the room models and they're properly initialize to avoid overwrites.
