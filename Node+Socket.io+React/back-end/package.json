@@ -5,7 +5,7 @@
   "description": "Demo Node server for a chat app.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dBish6/Node_Chat_App_Demos"
+    "url": "git+https://github.com/dBish6/Node_Chat_App_Demos.git"
   },
   "engines": {
     "node": ">=18.0.0"
