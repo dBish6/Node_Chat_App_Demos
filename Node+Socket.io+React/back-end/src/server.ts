@@ -59,8 +59,6 @@ const setupServer = async () => {
       console.error("Server start error:\n" + error.message);
     }
   });
-
-  return io;
 };
 
 setupServer();
