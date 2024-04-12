@@ -5,7 +5,7 @@
   "description": "Demo React front-end for a chat app.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dBish6/Node_Chat_App_Demos"
+    "url": "git+https://github.com/dBish6/Node_Chat_App_Demos.git"
   },
   "homepage": "https://dbish6.github.io/Node_Chat_App_Demos/",
   "engines": {
