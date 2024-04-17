@@ -17,7 +17,6 @@ import chatRouter from "./routes/chatRoute";
 
 export const corsOptions = {
   origin: ["http://localhost:3000", "https://dbish6.github.io"],
-  credentials: true,
 };
 
 const initializeApi = async () => {

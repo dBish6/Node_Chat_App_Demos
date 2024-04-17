@@ -1,9 +1,9 @@
 /* Chat App Demo (back-end)
- * Version: 3.6.15
+ * Version: 3.6.16
  *
  * Author: David Bishop
  * Creation Date: December 10, 2023
- * Last Updated: March 31, 2024
+ * Last Updated: April 16, 2024
  *
  * Description:
  * This application is a demo chat app that allows users to exchange messages in real-time.
@@ -29,7 +29,7 @@ import initializeApi, { corsOptions } from "./api";
 
 import { connect } from "mongoose";
 
-import initializeSockets from "./sockets";
+import initializeSocket from "./socket";
 
 dotenv.config(); // Loads the default .env.
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` }); // loads the environment specific .env if any.
@@ -46,8 +46,8 @@ const setupServer = async () => {
       cors: corsOptions,
     });
 
-  await initializeSockets(io);
-  console.log("Sockets initialized!");
+  initializeSocket(io);
+  console.log("Socket.io initialized!");
 
   httpServer.listen(PORT, HOST, async () => {
     try {

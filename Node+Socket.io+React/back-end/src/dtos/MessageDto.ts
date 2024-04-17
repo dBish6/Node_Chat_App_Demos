@@ -1,4 +1,4 @@
-import { UserDTO } from "../sockets/dtos/Room";
+import { UserDTO } from "../socket/dtos/Room";
 
 export interface MessageDTO extends UserDTO {
   userId: string;
